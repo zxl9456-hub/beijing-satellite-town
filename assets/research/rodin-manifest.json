@@ -1,0 +1,13 @@
+{
+  "provider": "Hyper3D Rodin web",
+  "status": "integrated",
+  "jobURL": "https://hyper3d.ai/workspace/rodin/870c0356-47ec-451c-97db-186f15ab2ff6",
+  "files": [
+    "./assets/research/workstation-rodin-1.bin",
+    "./assets/research/workstation-rodin-2.bin",
+    "./assets/research/workstation-rodin-3.bin"
+  ],
+  "sourceTriangles": 1000000,
+  "triangles": 258988,
+  "textureResolution": 2048
+}

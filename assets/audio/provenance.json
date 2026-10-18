@@ -1,0 +1,12 @@
+{
+  "title": "北京卫星小镇·逐星晴空",
+  "generator": "Suno v6",
+  "created": "2026-10-16",
+  "source_url": "https://suno.com/song/34ba6208-9e96-4392-a6b7-13653aaac049",
+  "source_duration_seconds": 88.76,
+  "website_file": "zhuxing-qingkong.mp3",
+  "processing": "2.14-second circular crossfade; loudness normalized to -20 LUFS; MP3 160 kbps stereo, 44.1 kHz",
+  "prompt": "Instrumental background music for Beijing Satellite Town, a warm sunlit miniature 3D science park adventure with two friendly astronaut mascots. Playful, lighthearted, curious, bright and welcoming, polished cozy adventure-game soundtrack, 112 BPM, D major. Bouncy marimba and soft pizzicato strings, delicate celesta sparkles, warm plucked synth arpeggios, gentle rounded bass, restrained shakers and soft electronic drums. A memorable short melodic motif with elegant variations, airy stereo space and a clean midrange for UI sounds and narration. Immediate gentle groove, steady moderate energy, clear 8-bar phrases, roughly 90 seconds, an open loop-friendly ending returning to the opening harmony. No vocals, no singing, no humming, no choir, no vocal chops, no spoken words, no loud drops, no harsh percussion, no epic trailer hits. Cheerful and sophisticated, not frantic or childish.",
+  "exclusions": "vocals, singing, humming, choir, vocal chops, spoken words, harsh percussion, heavy EDM drops, epic trailer hits",
+  "sfx": "Original short Web Audio synthesis; no third-party sound samples"
+}

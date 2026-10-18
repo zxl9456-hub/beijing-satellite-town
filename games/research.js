@@ -1,0 +1,83 @@
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {part,finishMaterial} from '../mission-scenery.js?art=34b';
+import {createWorkstation,moduleModel,disc,hoop} from '../research-environment.js?art=34b';
+import {researchParts as ids,researchNames as names,researchPorts as ports} from '../research-state.js?art=34b';
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+const info={power:'金色电池组的底部是一排矩形触点，为整颗卫星提供稳定电源。先接通电源总线，其他设备才能安装。',wings:'成对的太阳翼带有左右双铰链，蓝色光伏电池将光能转为电能。展开后还需要朝向模拟太阳。',camera:'镜头后方的圆形安装座连接光学载荷，细密散热片帮助设备保持稳定。安装后需要用标定图检查焦位。',antenna:'抛物面天线通过同轴接口连接顶部转台，将卫星采集的信息发送到地面站。信道必须与接收端一致。'};
+const testNames={wings:'太阳翼供电',camera:'相机标定',antenna:'通信握手'};
+const button=(a,t,c='research-primary',d=false)=>`<button class="${c}" data-action="${a}" ${d?'disabled':''}>${t}</button>`;
+const note=(t,s)=>`<div class="research-note"><span>${t}</span>${s}</div>`;
+export function createResearchPuzzle(stage,state,mission,api){
+ const root=stage.content,dock=api.dock,station=createWorkstation(root),anchors=[],cleanups=[];
+ let panel='overview',selected='power',test='wings',notebook=false,cameraMove=null,last=-1,lastCD=-1,launchTime=0,down=null,disposed=false,lastPanelKey='';
+ station.load().then(m=>{if(m){stage.canvas.dataset.rodin='loaded';stage.needsRender=true;}}).catch(e=>console.warn('Research workstation unavailable',e));
+ const controls=new OrbitControls(stage.camera,stage.canvas);controls.target.set(0,2,0);controls.enableDamping=true;controls.enablePan=false;controls.minDistance=5;controls.maxDistance=38;controls.minPolarAngle=.28;controls.maxPolarAngle=1.35;controls.minAzimuthAngle=-1.2;controls.maxAzimuthAngle=1.2;controls.rotateSpeed=.5;controls.update();
+ const home={pos:stage.camera.position.clone(),target:controls.target.clone()},reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ stage.buddies.xingzai.group.position.set(-5.1,0,3.2);stage.buddies.xingzai.group.rotation.y=.35;stage.buddies.xunbao.group.position.set(4.9,.5,3.4);stage.buddies.xunbao.group.rotation.y=-.45;
+ const satellite=new THREE.Group();satellite.position.set(0,3.05,.55);root.add(satellite);
+ part(satellite,1.45,1.32,1.22,'gold',0,0,0,.08);part(satellite,1.22,1.18,1.26,'metal',0,0,0,.04);
+ for(const x of [-.7,.7]){part(satellite,.07,1.5,1.4,'gold',x,0,0);for(let z=-.48;z<.6;z+=.16)part(satellite,.13,.85,.025,'glass',x,0,z);}
+ for(const y of [-.66,.66])part(satellite,1.52,.055,1.4,'gold',0,y,0);
+ for(const x of [-.55,.55])for(const y of [-.5,.5]){const screw=disc(satellite,.035,.03,'glass',x,y,.65);screw.rotation.x=Math.PI/2;}
+ disc(satellite,.28,.05,'glass',0,0,.66).rotation.x=Math.PI/2;hoop(satellite,.3,'gold',0,0,.69).rotation.x=0;
+ part(satellite,.3,.16,.04,'glass',0,.47,.66);const status=part(satellite,.18,.035,.02,'cyan',0,.47,.69);
+ disc(root,.55,.2,'metal',0,2.02,.55);disc(root,.21,.4,'gold',0,2.23,.55);
+ const inspectionSpot=V(0,3.15,4.4);
+ const trays={power:V(-2.65,2.13,1.65),wings:V(-2.75,2.17,-1.15),camera:V(2.65,2.13,1.65),antenna:V(2.75,2.3,-1.15)};
+ const mounts={power:V(0,-.82,0),wings:V(0,.1,0),camera:V(0,0,.9),antenna:V(0,1.1,0)};
+ const modules={},glows={};
+ function mark(t,p,fn){const a=stage.hotspot(t,p,()=>{if(api.active())fn();},{className:'research-beacon'});anchors.push(a);return a;}
+ ids.forEach((id,i)=>{const g=new THREE.Group();root.add(g);g.position.copy(trays[id]);const model=moduleModel(id);g.add(model);model.scale.setScalar(id==='wings'?.5:.9);modules[id]={g,model,installed:false,flight:0};
+  const glow=hoop(root,.5,'cyan',trays[id].x,trays[id].y-.28,trays[id].z,.012);glows[id]=glow;
+  const arrow=new THREE.Mesh(new THREE.ConeGeometry(.08,.22,3),finishMaterial('gold'));arrow.position.set(0,.55,.45);arrow.rotation.x=Math.PI/2;model.add(arrow);modules[id].arrow=arrow;
+  mark(String(i+1).padStart(2,'0')+' '+names[id],trays[id].clone().add(V(0,.6,0)),()=>inspect(id));
+ });
+ const groundRing=hoop(root,3.6,'cyan',0,.025,0,.018),launchRing=hoop(root,1.8,'cyan',0,2.13,.55,.014);launchRing.visible=false;
+ const solarRay=new THREE.Mesh(new THREE.CylinderGeometry(.04,.6,5.5,32,1,true),new THREE.MeshBasicMaterial({color:'#ffe0a0',transparent:true,opacity:.08,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));const lightDirection=V(0,Math.cos(state.targets.wings*Math.PI/6),Math.sin(state.targets.wings*Math.PI/6));solarRay.position.copy(satellite.position).addScaledVector(lightDirection,2.7);solarRay.quaternion.setFromUnitVectors(V(0,1,0),lightDirection);root.add(solarRay);solarRay.visible=false;
+ function say(text,good=true){api.message(text);api.feedback(text,good);}
+ function focus(point,wide=false){cameraMove={from:stage.camera.position.clone(),fromT:controls.target.clone(),to:wide?home.pos.clone():point.clone().add(V(2.8,2.5,6.8)),target:wide?home.target.clone():point.clone(),t:reduced?1:0};}
+ function overview(){panel='overview';notebook=false;focus(home.target,true);render();}
+ function inspect(id){if(!state.blueprint){panel='brief';render();return;}selected=id;state.inspect(id);panel='inspect';notebook=false;focus(state.placed.includes(id)?satellite.position:inspectionSpot);api.effect('click');render();}
+ function testing(id='wings'){test=id;panel='testing';notebook=false;focus(satellite.position);render();}
+ function taskNote(){return note('逐星实验室 · 本次任务单','先建立电源连接，再安装太阳翼与载荷。<br>模拟光源入射角：<b>'+state.targets.wings*30+'°</b><br>光学标定焦位：<b>F'+state.targets.camera+'</b><br>地面站接收信道：<b>CH '+state.targets.antenna+'</b>');}
+ function brief(){return '<div class="research-kicker">MISSION / 装配任务</div><h3>让卫星真正工作起来</h3><p>星仔负责装配，讯宝负责地面检测。阅读任务单，再检查四个部件的连接器与定位箭头。</p>'+taskNote()+(state.blueprint?button('next','检查尚未安装的部件'):button('read','记录任务并开始装配'));}
+ function overviewHTML(){const p=state.phase;return '<div class="research-kicker">ASSEMBLY LAB / 逐星实验室</div><h3>'+({brief:'一颗卫星的诞生',assembly:'检查 · 旋转 · 锁定',testing:'装好了，还要能工作',launch:'准备交付逐星卫星',complete:'卫星联调通过'}[p])+'</h3><p>'+({brief:'精密装配台已就绪。打开任务单，和星仔、讯宝开始这次工程挑战。',assembly:'观察连接器形状，旋转部件对准定位箭头，再选择正确的机身接口。',testing:'先恢复太阳翼供电，再校准观测镜头、建立地面通信。每次调整都会改变卫星的状态。',launch:'供电、光学与通信全部通过。完成最后的交付，点亮研发之星。',complete:'从独立部件到完整卫星，你完成了全部装配与地面检测。'}[p])+'</p><div class="research-steps">'+[['任务单',+state.blueprint,1],['检查部件',state.inspected.length,4],['接口装配',state.placed.length,4],['地面联调',state.tested.length,3]].map(([s,n,m])=>`<div class="${n===m?'done':''}"><span>${n===m?'✓':'○'} ${s}</span><b>${n}/${m}</b></div>`).join('')+'</div>'+({brief:button('brief','查看装配任务单'),assembly:button('next','检查尚未安装的部件'),testing:button('testing','进入地面联调'),launch:button('launch','✦ 完成交付'),complete:''}[p])+'<p class="research-micro">点击台上的部件检查 · 拖动场景旋转<br>滚轮或双指缩放 · 随时查阅工程手册</p>';}
+ function inspectHTML(){const id=selected,done=state.placed.includes(id);return `<div class="research-kicker">COMPONENT ${String(ids.indexOf(id)+1).padStart(2,'0')} / 接口检查</div><h3>${names[id]}</h3><p>${info[id]}</p>`+note('接口铭牌 · 以机身北位为 0°',`锁定方向 <b>${state.keys[id]*90}°</b><br>将金色定位箭头旋转到这一方向，再选择机身上的安装位置。检查时部件会移到前方。`)+(done?'<div class="research-success">✓ 已安装并锁定</div>'+button(state.placed.length===4?'testing':'next',state.placed.length===4?'进入地面联调':'继续检查其他部件'):`<div class="research-rotation"><button data-rotate="-1" aria-label="部件逆时针旋转90度" ${state.cooldown?'disabled':''}>↶</button><output><b>${state.orientation[id]*90}°</b><small>当前定位方向</small></output><button data-rotate="1" aria-label="部件顺时针旋转90度" ${state.cooldown?'disabled':''}>↷</button></div><p class="research-section-label">选择机身接口并锁定</p><div class="research-ports">${ids.map(k=>`<button data-port="${k}" ${state.placed.includes(k)||state.cooldown?'disabled':''}>${ports[k]} <span>${state.placed.includes(k)?'✓':'↗'}</span></button>`).join('')}</div>`);}
+ function units(id,value){return id==='wings'?value*30+'°':id==='camera'?'F'+value:'CH '+value;}
+ function testHTML(){const id=test,passed=state.tested.includes(id),matched=state.settings[id]===state.targets[id],distance=Math.abs(state.settings[id]-state.targets[id]);return '<div class="research-kicker">GROUND TEST / 地面联调</div><h3>'+testNames[id]+'</h3><div class="research-tests">'+Object.keys(testNames).map(k=>`<button data-test-tab="${k}" aria-pressed="${id===k}">${state.tested.includes(k)?'✓ ':''}${testNames[k]}</button>`).join('')+'</div><p>'+({wings:'旋转太阳翼，使电池片正对模拟光源。角度可在任务单中查到，发电效率会随角度实时变化。',camera:'调整镜头焦位，观察标定图的清晰度。供电测试通过后，才能确认光学标定。',antenna:'调整收发信道，让卫星与地面站建立匹配的通信链路。任务单记录着接收端设置。'}[id])+'</p>'+`<div class="research-monitor ${id}">${id==='camera'?`<div class="reticle" style="filter:blur(${distance*1.6}px)">⊕<small>光学标定靶</small></div>`:id==='wings'?`<span class="monitor-icon">☀</span><strong>${Math.round(Math.max(8,100*Math.cos(distance*Math.PI/6)**2))}%</strong><small>模拟光伏效率</small>`:`<div class="signal-bars">${[0,1,2,3,4].map(i=>`<i style="height:${12+i*9}px;opacity:${matched||i<2?1:.16}"></i>`).join('')}</div><small>${matched?'应答信号已匹配':'等待地面站应答'}</small>`}</div>`+(passed?'<div class="research-success">✓ '+testNames[id]+'测试通过</div>':`<div class="research-rotation"><button data-config="-1" aria-label="减小联调参数" ${state.cooldown?'disabled':''}>−</button><output><b>${units(id,state.settings[id])}</b><small>${id==='wings'?'太阳翼偏转角':id==='camera'?'镜头焦位':'收发信道'}</small></output><button data-config="1" aria-label="增大联调参数" ${state.cooldown?'disabled':''}>＋</button></div>`+button('test','确认参数并运行测试','research-primary',!!state.cooldown))+button('notebook','查阅本次任务参数','research-text')+(state.tested.length===3?button('launch','✦ 完成交付'):passed?button('next-test','继续下一项检测'):'');}
+ function notebookHTML(){return '<div class="research-kicker">ENGINEERING NOTES</div><h3>星仔的工程手册</h3>'+taskNote()+'<div class="research-notes">'+ids.map(id=>`<article><strong>${names[id]} <span>${state.placed.includes(id)?'✓ 已安装':''}</span></strong><p>${state.inspected.includes(id)?ports[id]+'<br>锁定方向 '+state.keys[id]*90+'°':'检查部件后记录连接器和定位方向'}</p></article>`).join('')+'</div>'+button('notebook','返回当前操作','research-text');}
+ function render(){const panelKey=[panel,notebook,selected,test].join('/');const active=dock.contains(document.activeElement)?document.activeElement:null,key=active?.dataset.focusKey,scroll=dock.parentElement.scrollTop;
+  dock.innerHTML='<div class="research-toolbar">'+button('overview','↖ 全景','')+'<button data-action="notebook" aria-expanded="'+notebook+'">工程手册 <b>'+state.placed.length+'/4</b></button></div>'+(state.blueprint?'<div class="research-parts">'+ids.map((id,i)=>`<button data-part="${id}" aria-pressed="${panel==='inspect'&&selected===id&&!notebook}"><b>${state.placed.includes(id)?'✓':String(i+1).padStart(2,'0')}</b><small>${names[id]}</small></button>`).join('')+'</div>':'')+(notebook?notebookHTML():panel==='brief'?brief():panel==='inspect'?inspectHTML():panel==='testing'?testHTML():overviewHTML())+'<div class="research-score">工程评价 <b>'+state.score+'</b><span>失误 '+state.mistakes+' · 提示 '+state.hints+'</span></div>';
+  dock.querySelectorAll('button').forEach(b=>b.dataset.focusKey=JSON.stringify({...b.dataset}));if(key){[...dock.querySelectorAll('button')].find(b=>b.dataset.focusKey===key&&!b.disabled)?.focus({preventScroll:true});dock.parentElement.scrollTop=scroll;}
+  if(panelKey!==lastPanelKey){dock.parentElement.scrollTop=0;lastPanelKey=panelKey;}
+  anchors.forEach((a,i)=>{a.el.hidden=panel!=='overview'||notebook||!state.blueprint||state.placed.includes(ids[i]);});last=state.revision;
+ }
+ function install(port){const ok=state.place(selected,port);say(ok?'星仔：'+names[selected]+'锁定完成！'+(state.placed.length===4?'四个部件齐了，现在请讯宝做地面联调。':'我们继续检查下一个部件。'):'讯宝：'+state.message,ok);if(ok){cameraMove=null;focus(satellite.position);}render();}
+ function next(){const id=ids.find(id=>!state.placed.includes(id));if(id)inspect(id);else testing();}
+ dock.onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled||!api.active())return;
+  if(b.dataset.part){inspect(b.dataset.part);return;}
+  if(b.dataset.rotate){if(state.rotate(selected,+b.dataset.rotate))api.effect('tick');render();return;}
+  if(b.dataset.port){install(b.dataset.port);return;}
+  if(b.dataset.testTab){testing(b.dataset.testTab);return;}
+  if(b.dataset.config){if(state.configure(test,+b.dataset.config))api.effect('tick');render();return;}
+  switch(b.dataset.action){case'overview':overview();break;case'notebook':notebook=!notebook;render();break;case'brief':panel='brief';render();break;case'read':state.read();say('星仔：任务参数已记入工程手册，先检查电源模块。');next();break;case'next':next();break;case'testing':testing();break;case'next-test':testing(Object.keys(testNames).find(id=>!state.tested.includes(id))||'wings');break;case'test':{const ok=state.test(test);say(ok?'讯宝：'+testNames[test]+'测试通过！'+(state.tested.length===3?'可以交付卫星了。':'继续下一项检测。'):'讯宝：'+state.message,ok);render();break;}case'launch':if(state.launch()){overview();say('星仔：电力充足、成像清晰、通信畅通！我们的卫星可以交付啦！');}break;}
+ };
+ const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();function pick(e){const r=stage.canvas.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);ray.setFromCamera(mouse,stage.camera);let o=ray.intersectObjects(ids.map(id=>modules[id].g),true)[0]?.object;while(o){const id=ids.find(id=>modules[id].g===o);if(id)return id;o=o.parent;}return null;}
+ const start=e=>{if(!api.active())return;cameraMove=null;down={x:e.clientX,y:e.clientY};},end=e=>{if(down&&Math.hypot(e.clientX-down.x,e.clientY-down.y)<6&&api.active()){const id=pick(e);if(id)inspect(id);}down=null;},move=e=>{if(api.active()&&!e.buttons)stage.canvas.style.cursor=pick(e)?'pointer':'grab';};
+ for(const [event,fn] of [['pointerdown',start],['pointerup',end],['pointermove',move],['pointercancel',()=>down=null]]){stage.canvas.addEventListener(event,fn);cleanups.push(()=>stage.canvas.removeEventListener(event,fn));}
+ render();
+ return {closeInspection(){if(panel==='overview'&&!notebook)return false;overview();return true;},hint(explicit=false){if(explicit){state.hint();render();}return ({brief:'星仔：先打开装配任务单，记录三项联调参数。',assembly:'星仔：先装电源。检查部件铭牌，把当前方向转到锁定方向，再按连接器形状选择位置。',testing:'讯宝：先测试太阳翼。光源角度、焦位和信道都记录在工程手册里。',launch:'讯宝：三项测试均已通过，点击完成交付。',complete:'星仔：这颗卫星是我们一起完成的！'}[state.phase]);},
+ update(dt,time){controls.enabled=api.active();if(cameraMove){cameraMove.t=Math.min(1,cameraMove.t+(reduced?1:dt*1.7));const t=cameraMove.t*cameraMove.t*(3-2*cameraMove.t);stage.camera.position.lerpVectors(cameraMove.from,cameraMove.to,t);controls.target.lerpVectors(cameraMove.fromT,cameraMove.target,t);if(t===1)cameraMove=null;}controls.update();stage.focusTarget.copy(controls.target);
+  if(state.done)launchTime+=dt;const lift=state.done?Math.min(1.2,launchTime*.5):0;satellite.position.y=3.05+lift;satellite.rotation.y=state.done?launchTime*.35:0;launchRing.visible=state.done;launchRing.scale.setScalar(1+Math.sin(launchTime*2)*.07);
+  satellite.updateWorldMatrix(true,false);
+  ids.forEach(id=>{const m=modules[id],installed=state.placed.includes(id),examining=panel==='inspect'&&selected===id&&!notebook&&!installed,dest=installed?satellite.localToWorld(mounts[id].clone()):examining?inspectionSpot:trays[id];if(installed&&!m.installed){m.flight=0;m.start=m.g.position.clone();m.installed=true;}if(installed){m.flight=Math.min(1,m.flight+dt*(reduced?20:1.2));const t=m.flight*m.flight*(3-2*m.flight);m.g.position.lerpVectors(m.start,dest,t);m.g.position.y+=Math.sin(t*Math.PI)*.7;m.model.scale.lerp(V(1,1,1),Math.min(1,dt*5));}else {m.g.position.lerp(dest,1-Math.exp(-dt*6));const scale=examining?(id==='wings'?.85:1.4):(id==='wings'?.5:.9);m.model.scale.lerp(V(scale,scale,scale),1-Math.exp(-dt*6));}
+   m.g.rotation.y=THREE.MathUtils.damp(m.g.rotation.y,installed?satellite.rotation.y:state.orientation[id]*Math.PI/2,8,dt);m.arrow.visible=!installed;glows[id].visible=!installed;glows[id].position.copy(m.g.position).y-=.35;
+  });
+  const wings=modules.wings.model.userData.hinges;for(const [i,h] of wings.entries())h.rotation.x=THREE.MathUtils.damp(h.rotation.x,state.placed.includes('wings')?state.settings.wings*Math.PI/6:0,5,dt);
+  if(state.placed.includes('camera'))modules.camera.model.userData.lens.position.z=THREE.MathUtils.damp(modules.camera.model.userData.lens.position.z,.7+state.settings.camera*.055,6,dt);
+  if(state.placed.includes('antenna'))modules.antenna.model.rotation.y=THREE.MathUtils.damp(modules.antenna.model.rotation.y,state.settings.antenna*.35,5,dt);
+  solarRay.visible=panel==='testing'&&test==='wings';status.visible=state.placed.includes('power');
+  const cd=Math.ceil(state.cooldown);if(last!==state.revision||cd!==lastCD){lastCD=cd;render();}
+ },dispose(){disposed=true;station.dispose();controls.dispose();cleanups.forEach(fn=>fn());dock.onclick=null;stage.canvas.style.cursor='';}};
+}

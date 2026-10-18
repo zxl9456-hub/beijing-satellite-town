@@ -1,0 +1,13 @@
+{
+  "provider": "Hyper3D Rodin web",
+  "status": "integrated",
+  "jobURL": "https://hyper3d.ai/workspace/rodin/d0974c73-bd0d-46f7-a226-206425476f69",
+  "files": [
+    "./assets/exhibition/calibration-rodin-1.bin",
+    "./assets/exhibition/calibration-rodin-2.bin",
+    "./assets/exhibition/calibration-rodin-3.bin"
+  ],
+  "sourceTriangles": 1000000,
+  "triangles": 264226,
+  "textureResolution": 2048
+}

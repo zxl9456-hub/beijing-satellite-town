@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f3e9">
+  <meta name="description" content="北京卫星小镇四区三中心三维探索：园区建筑、区域介绍、局部3D与粒子生长。">
+  <title>北京卫星小镇 · 园区建筑</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='20' fill='%23132e4e'/%3E%3Cellipse cx='32' cy='32' rx='31' ry='9' transform='rotate(-25 32 32)' fill='none' stroke='%230bb9ce' stroke-width='5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css?art=22a">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/addons/"}}</script>
+<link rel="stylesheet" href="./town-audio.css?art=18a"><link rel="stylesheet" href="./cursor-light.css?art=22a"><script type="module" src="./performance-diagnostics.js?art=34b"></script>
+</head>
+<body>
+  <main id="experience" aria-label="园区三维模型">
+    <canvas id="scene" aria-label="鼠标悬停照亮建筑，单击进入区域探索，双击靠近，拖动旋转，滚轮缩放" tabindex="0"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <div id="cursor-light-pointer" class="hidden" aria-hidden="true"></div>
+    <header>
+      <button class="brand glass" id="brand-home" aria-label="返回园区总览">
+        <svg class="planet" viewBox="0 0 80 80" aria-hidden="true"><defs><linearGradient id="planet-g" x2="1" y2="1"><stop stop-color="#1b93cd"/><stop offset="1" stop-color="#143965"/></linearGradient></defs><circle cx="39" cy="39" r="23" fill="url(#planet-g)"/><ellipse cx="39" cy="40" rx="36" ry="11" transform="rotate(-27 39 40)" fill="none" stroke="#fff" stroke-width="7"/><ellipse cx="39" cy="40" rx="36" ry="11" transform="rotate(-27 39 40)" fill="none" stroke="#16426f" stroke-width="3"/><circle cx="62" cy="12" r="6" fill="#ff971f"/><circle cx="31" cy="27" r="5" fill="#a0e4f6"/></svg>
+        <span><strong>北京卫星小镇</strong><small><i></i> 四区三中心 · 三维探索</small></span>
+      </button>
+      <div class="top-actions"><a class="glass home-return" href="./journey.html">✦ <span>逐星计划</span></a><a class="glass home-return" href="./" aria-label="返回星仔讯宝首页">⌂ <span>首页</span></a><button class="glass regions-button" id="regions-button" aria-expanded="false" aria-controls="region-directory">✦ <span>区域探索</span></button>
+        <button class="weather glass" id="light-toggle" title="切换午后 / 黄昏光照"><span class="sun" data-icon="sun"></span><b id="time-label">17:40</b><span class="divider"></span><span id="weather-label">夕阳 · 晴</span></button>
+        <button class="round glass" id="settings-button" data-icon="settings" aria-label="画面设置"></button>
+      </div>
+    </header>
+    <div class="scene-label"><span class="label-rule"></span><span id="view-category">SATELLITE TOWN</span><span class="label-dot"></span><span id="view-label">园区总览</span></div>
+    <div id="hover-hint" class="glass hidden" aria-hidden="true"></div>
+    <div id="landmarks" aria-label="建筑位置标记"></div>
+    <aside id="building-card" class="glass hidden" aria-live="polite">
+      <button id="close-card" class="plain card-close" data-icon="close" aria-label="关闭建筑信息"></button>
+      <span class="eyebrow">REGION EXPLORATION / <span id="building-number">01</span></span>
+      <h1 id="building-title">园区会客厅</h1><p id="building-description"></p>
+      <div id="building-card-tags"></div><div id="building-card-metrics"></div><button id="visit-building" class="primary">进入粒子建筑探索 <span data-icon="arrow"></span></button><button id="approach-building" class="text-button">在园区中查看近景 <span data-icon="focus"></span></button>
+    </aside>
+    <aside id="region-directory" class="glass hidden" aria-label="四区三中心探索入口"><div class="panel-heading"><span><strong>四区三中心</strong><small>让建筑成为认识园区的入口</small></span><button id="close-regions" class="plain" data-icon="close" aria-label="关闭区域探索"></button></div><div id="region-entries"></div><p>点击区域，查看粒子建筑与功能介绍</p></aside>
+    <aside id="settings" class="glass hidden" aria-label="画面设置">
+      <div class="panel-heading"><strong>画面设置</strong><button class="plain" id="close-settings" data-icon="close" aria-label="关闭画面设置"></button></div>
+      <label>光照氛围</label><div class="segmented" id="lighting-control"><button data-light="afternoon">暖阳午后</button><button data-light="evening" class="active">金色夕阳</button></div>
+      <label>景观色彩</label><div class="segmented" id="season-control"><button data-season="autumn" class="active">秋日金黄</button><button data-season="green">葱郁常绿</button></div>
+      <div class="setting-row"><label for="markers-toggle">建筑标记</label><input type="checkbox" id="markers-toggle" role="switch"></div>
+      <div class="setting-row"><label for="orbit-toggle">自动环游</label><input type="checkbox" id="orbit-toggle" role="switch"></div>
+      <div class="setting-row"><label for="water-motion-toggle">水面波纹</label><input type="checkbox" id="water-motion-toggle" role="switch" checked></div>
+      <div class="setting-row"><label for="cursor-light-toggle">鼠标光效</label><input type="checkbox" id="cursor-light-toggle" role="switch" checked></div>
+      <div class="setting-row"><label for="interaction-toggle">交互光效</label><input type="checkbox" id="interaction-toggle" role="switch" checked></div>
+      <div class="setting-row"><label for="dof-toggle">镜头景深</label><input type="checkbox" id="dof-toggle" role="switch" checked></div>
+      <div class="setting-row"><label for="shadow-toggle">柔和阴影</label><input type="checkbox" id="shadow-toggle" role="switch" checked></div>
+      <button data-view="garden" class="text-button">花园近景 <span data-icon="focus"></span></button>
+      <button data-view="trees" class="text-button">林荫近景 <span data-icon="layers"></span></button>
+      <button data-view="foliage" class="text-button">树冠光影 <span data-icon="sun"></span></button>
+      <button id="reset-view" class="text-button">恢复园区总览 <span data-icon="reset"></span></button>
+    </aside>
+    <div class="bottom-left"><span class="live-dot"></span><span id="status-label">原始园区 · 实时三维</span><small>单击探索区域 · 拖动旋转 · 双击靠近</small></div>
+    <nav class="view-nav glass" aria-label="建筑视角">
+      <button data-view="overview" class="active"><span data-icon="map"></span><b>核心组团</b></button>
+      <button data-view="offices"><span data-icon="building"></span><b>卫星研发</b></button>
+      <button data-view="hotel"><span data-icon="building"></span><b>人才社区</b></button>
+      <button data-view="apartments"><span data-icon="layers"></span><b>数据应用</b></button>
+      <button data-view="courtyard"><span data-icon="focus"></span><b>光影特写</b></button>
+      <button data-view="water"><span data-icon="water"></span><b>水系近景</b></button>
+      <span class="nav-divider"></span><button id="screenshot-button" aria-label="保存当前画面"><span data-icon="camera"></span><b>保存画面</b></button>
+    </nav>
+    <div id="minimap" class="glass"><div class="map-north">N <span>▲</span></div><canvas id="map-canvas" width="400" height="400" aria-label="园区鸟瞰图，点击跳转位置"></canvas><div class="map-buttons"><button id="zoom-in" aria-label="放大" data-icon="plus"></button><button id="zoom-out" aria-label="缩小" data-icon="minus"></button></div><span class="map-title">园区鸟瞰</span></div>
+    <div id="toast" role="status" class="glass hidden"></div>
+    <div id="loading"><a href="./" class="loading-home">← 返回首页</a><div class="load-planet">✦</div><h2>北京卫星小镇</h2><p id="loading-text">正在载入园区建筑</p><div class="load-bar"><i id="loading-progress"></i></div><small>建筑 · 景深光影 · 金色夕阳</small><button class="primary hidden" id="retry-button">重新载入</button><div class="loading-explore"><b>也可以先探索局部建筑</b><div id="loading-regions"></div></div></div>
+  </main>
+  <script type="module" src="./app.js?art=34b"></script>
+<script type="module" src="./town-audio.js?art=34b"></script></body>
+</html>

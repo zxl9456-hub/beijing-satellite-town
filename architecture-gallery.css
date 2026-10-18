@@ -1,0 +1,82 @@
+/* An architectural gallery: generous space, quiet materials, real depth. */
+.region-grid,.quest-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px}
+.region-card[hidden]{display:none}
+.region-card,.quest-card{display:flex;flex-direction:column;min-width:0;border:1px solid #d9d9cf;border-radius:18px;background:#fffcf6;box-shadow:0 6px 22px #273d4510;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s}
+.region-card:hover,.quest-card:hover{transform:translateY(-3px);border-color:#a7b8b1;box-shadow:0 15px 35px #243d4514}
+.region-grid[data-filter="all"] .region-card:last-child,.quest-card:last-child{grid-column:1/-1;max-width:calc(50% - 15px);width:100%;justify-self:center}
+.region-card-body,.quest-card-body{padding:25px 28px 27px;display:flex;flex-direction:column;flex:1}
+.region-card-body h3{font-size:21px;letter-spacing:.02em;margin:12px 0 8px}
+.region-card-body>small{font-size:9px;letter-spacing:.17em;color:#779091}
+.region-card-body>p,.quest-card-body>p{font-size:13px;line-height:1.85;color:#6c8085;min-height:0;margin:8px 0 22px}
+.region-enter{font-size:12px;margin-top:auto;padding-top:19px;border-top:1px solid #e0e2d8;display:flex;justify-content:space-between;color:#2b7582;font-weight:600}
+.region-enter b{font-size:21px;line-height:1}
+.region-enter:hover{color:#122f43}
+.quest-card h3{font-size:23px;margin:8px 0 0;min-height:0}
+.quest-card-body>small{font-size:11px;color:#6d8584}
+.quest-reward{font-size:12px;margin:auto 0 19px;color:#a7844a}
+.quest-links{border-top:1px solid #e0e2d8;padding-top:18px;gap:16px;flex-direction:row;align-items:center}
+.quest-links>a{background:none;border-radius:0;padding:7px 0;font-size:12px;color:#375b6b}
+.quest-links>a.game-link{background:#e0edeb;color:#287c88;border-radius:30px;padding:11px 16px}
+.quest-links>small{font-size:11px;color:#87958f}
+.quest-card.ready{border-color:#88b9ba;box-shadow:0 0 0 1px #88b9ba,0 6px 22px #273d4510}
+.architecture-view{position:relative;aspect-ratio:3/2;min-height:220px;isolation:isolate;background:radial-gradient(ellipse at 36% 18%,#faf3e6,#eae6dc 70%);overflow:hidden;flex:none}
+.architecture-view canvas{display:block;width:100%;height:100%;position:absolute;inset:0;cursor:grab;outline:none;transition:opacity .7s;opacity:0}
+.architecture-view[data-state="ready"] canvas{opacity:1}
+.architecture-view canvas:active{cursor:grabbing}
+.architecture-view canvas:focus-visible{outline:2px solid #2b9aa6;outline-offset:-4px}
+.architecture-label{position:absolute;left:20px;top:18px;right:20px;display:flex;justify-content:space-between;gap:16px;pointer-events:none;font-size:10px;letter-spacing:.12em;color:#526d76}
+.architecture-label>span:first-child{font-variant-numeric:tabular-nums}
+.architecture-live{display:flex;align-items:center;gap:6px;letter-spacing:.06em;font-size:9px}
+.architecture-live i{width:5px;height:5px;border-radius:50%;background:#8d9c93}
+[data-state="ready"] .architecture-live i{background:#5b9b8d;box-shadow:0 0 0 3px #5b9b8d15}
+.architecture-tools{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:5px;padding:22px 16px 12px;background:linear-gradient(transparent,#eae6dce6);pointer-events:none;font-size:9px;letter-spacing:.02em;color:#637d80}
+.architecture-tools>div{display:flex;align-items:center;gap:7px}
+.architecture-tools button{pointer-events:auto;background:#fffcf1d9;border:1px solid #fff8;border-radius:24px;padding:9px 12px;color:#355e6d;font-family:inherit;font-size:10px;cursor:pointer;transition:background .2s,box-shadow .2s}
+.architecture-tools button:hover{background:#fffaf0;box-shadow:0 3px 12px #314d471a}
+.architecture-tools [data-architecture-reset]{font-size:16px;padding:5px 10px;line-height:23px}
+.architecture-status{position:absolute;left:20px;top:45px;font-size:9px;color:#71877c;pointer-events:none}
+.architecture-status.ready{color:#268797}.architecture-status.done{color:#448575}
+.architecture-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-size:11px;color:#728680;pointer-events:none;transition:opacity .25s}
+.architecture-spinner{height:28px;width:28px;border:1px solid #a7b5ad55;border-top-color:#5e898a;border-radius:50%;animation:architecture-spin 1.1s linear infinite}
+.architecture-loading button{pointer-events:auto;border:1px solid #a1b3ab;border-radius:20px;background:#fefaf1;padding:9px 20px;color:#496977;cursor:pointer;font:inherit}
+.architecture-view[data-state="ready"] .architecture-loading{opacity:0;visibility:hidden}
+.architecture-view[data-state="error"] .architecture-spinner{display:none}
+.architecture-view[data-state="error"] .architecture-tools>span{visibility:hidden}
+.architecture-view [hidden]{display:none!important}
+@keyframes architecture-spin{to{transform:rotate(360deg)}}
+.architecture-note{display:flex;align-items:center;gap:11px;color:#748985;font-size:12px;line-height:1.8;margin:0 0 30px}
+.architecture-note:before{content:'';width:26px;height:1px;background:#9bafaa;flex:none}
+.architecture-modal-open{overflow:hidden}
+dialog.architecture-dialog{width:min(1180px,94vw);max-width:none;max-height:94dvh;padding:0;border:1px solid #fff8;background:#f3efe5;color:#173b50;border-radius:18px;overflow:auto;box-shadow:0 40px 100px #0c293a55}
+.architecture-dialog::backdrop{background:#142d3ec4;backdrop-filter:blur(9px)}
+.architecture-dialog>header{padding:24px 30px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #d6d8cf}
+.architecture-dialog>header small{font-size:9px;letter-spacing:.2em;color:#7c9293}
+.architecture-dialog h2{font-size:25px;margin:8px 0 0;letter-spacing:.03em}
+.architecture-dialog [data-viewer-close]{background:#e6e7dd;color:#49666c;border:0;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:24px}
+.architecture-modal-stage .architecture-view{aspect-ratio:auto;height:min(62dvh,650px);min-height:290px}
+.architecture-modal-stage .architecture-tools{display:none}
+.architecture-modal-stage .architecture-label{font-size:10px;top:16px;left:30px;right:30px}
+.architecture-dialog>footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 26px 9px;flex-wrap:wrap}
+.architecture-camera,.architecture-light{display:flex;gap:4px;align-items:center}
+.architecture-dialog>footer button{padding:10px 12px;background:transparent;color:#6e8486;font:inherit;font-size:11px;border:1px solid transparent;border-radius:24px;cursor:pointer}
+.architecture-dialog>footer button[aria-pressed="true"]{background:#e1e9e2;color:#254e5e;border-color:#c6d5cb}
+.architecture-dialog>footer button:hover{background:#e8e9de}
+.architecture-story{color:#f8faf3;background:#264e60;border-radius:28px;padding:13px 22px;font-size:12px;text-decoration:none}
+.architecture-modal-hint{font-size:10px;color:#86948d;text-align:center;margin:10px 0 21px;letter-spacing:.04em}
+.book-region{grid-template-columns:1fr}
+.book-region .book-architecture-link{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#1f7e90}
+@media(min-width:1600px){.region-grid,.quest-cards{gap:36px}.region-grid[data-filter="all"] .region-card:last-child,.quest-card:last-child{max-width:calc(50% - 18px)}}
+@media(max-width:1000px){.region-grid,.quest-cards{gap:20px}.region-card-body,.quest-card-body{padding:22px}.architecture-tools>span{font-size:8px}.architecture-label{left:14px;right:14px}.architecture-status{left:14px}.region-card-body h3{font-size:18px}.quest-card h3{font-size:21px}}
+@media(max-width:650px){.region-grid,.quest-cards{grid-template-columns:1fr;gap:23px}.region-grid[data-filter="all"] .region-card:last-child,.quest-card:last-child{grid-column:auto;max-width:none}.architecture-view{min-height:220px}.region-card-body,.quest-card-body{padding:22px}.region-card-body h3{font-size:20px}.region-card-body>p,.quest-card-body>p{font-size:12px;min-height:0}.quest-card h3{font-size:23px}.quest-reward{min-height:0;margin:2px 0 18px}.quest-links{flex-direction:row}.quest-links a{font-size:11px}.architecture-note{font-size:11px}.architecture-tools>span{font-size:9px}.architecture-dialog>header{padding:19px 20px}.architecture-dialog>header small{font-size:7px;letter-spacing:.12em}.architecture-dialog h2{font-size:22px}.architecture-dialog>footer{gap:12px;justify-content:center;padding:15px 12px 6px}.architecture-camera{gap:0}.architecture-dialog>footer button{padding:9px 10px}.architecture-modal-stage .architecture-view{height:48dvh;min-height:300px}.architecture-modal-hint{font-size:9px}.architecture-story{padding:12px 18px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.architecture-view canvas,.region-card,.quest-card{transition:none}.architecture-spinner{animation:none}}
+/* An architectural reading room: one subject, three anchored details. */
+.architecture-viewer-body{display:grid;grid-template-columns:minmax(0,1fr) 280px}
+.architecture-detail{padding:40px 28px;background:#f9f6ee;border-left:1px solid #d6d8cf;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.tour-eyebrow{font-size:8px;letter-spacing:.17em;color:#8c9a92}.architecture-detail h3,.discovery-note h3{font-size:24px;line-height:1.5;font-weight:650;margin:18px 0;color:#204859}
+.tour-copy{color:#6e8187;font-size:12px;line-height:2;margin:0 0 25px}.tour-options{display:flex;gap:7px;flex-wrap:wrap}.tour-options button{border:1px solid #cfd8d1;border-radius:7px;background:transparent;color:#687f83;padding:9px 10px;font-family:inherit;cursor:pointer;font-size:11px}.tour-options i{font-size:8px;font-style:normal;margin-right:5px;color:#9aa79e}.tour-options button[aria-pressed="true"]{background:#e1eeea;border-color:#87b5ae;color:#257d80}.tour-options button.visited i{color:#25918c}.tour-count{font-size:10px;color:#8b9a93;margin:22px 0 12px}.tour-count b{color:#3d827e;font-weight:500}.tour-overview{font:inherit;font-size:11px;color:#5d8086;padding:7px 0;text-align:left;border:0;background:none;cursor:pointer}
+.tour-hotspots{position:absolute;inset:0;pointer-events:none;z-index:3}.tour-pin{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;border:1px solid #fff8;padding:4px 11px 4px 4px;border-radius:24px;background:#fffaf0e8;color:#365e68;box-shadow:0 3px 18px #16354524;display:flex;align-items:center;gap:7px;font:inherit;cursor:pointer;backdrop-filter:blur(9px)}.tour-pin span{width:25px;height:25px;display:grid;place-items:center;border-radius:50%;background:#dcece5;font-size:10px;color:#287c80}.tour-pin small{font-size:10px}.tour-pin:hover,.tour-pin.active{border-color:#73aead;background:#fffdf5}.tour-pin.active span{background:#2e8b93;color:white}.tour-pin[hidden]{display:none}.architecture-modal-stage .architecture-view{height:min(60dvh,650px)}
+@media(max-width:800px){.architecture-viewer-body{grid-template-columns:1fr}.architecture-detail{padding:19px 23px;border-left:0;border-top:1px solid #d6d8cf;display:block}.architecture-detail h3{font-size:18px;margin:8px 0}.tour-copy{font-size:11px;line-height:1.8;margin-bottom:12px}.tour-count{display:inline-block;margin:12px 15px 0 0}.tour-overview{display:inline}.architecture-modal-stage .architecture-view{height:43dvh;min-height:260px}.architecture-dialog>header{padding:15px 23px}.architecture-dialog>footer{padding-top:12px}.architecture-dialog h2{font-size:20px}.tour-pin small{font-size:9px}}
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:gallery-out .2s ease both}::view-transition-new(root){animation:gallery-in .4s ease both}
+@keyframes gallery-out{to{opacity:0;transform:scale(.99)}}@keyframes gallery-in{from{opacity:0;transform:translateY(8px)}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}

@@ -1,0 +1,65 @@
+/* Museum field notes: native controls remain usable with keyboard and touch. */
+[data-mission=exhibition] .mission-console{width:312px;top:112px;right:22px;padding:17px 21px;max-height:calc(100dvh - 138px)}
+[data-mission=exhibition] .mission-location{display:none}
+[data-mission=exhibition] .game-info{width:224px;top:146px}
+[data-mission=exhibition] .game-info h1{font-size:23px}
+[data-mission=exhibition] .game-nav{left:auto;right:350px;transform:none;padding:5px;bottom:23px}
+[data-mission=exhibition] .game-nav>a,[data-mission=exhibition] .game-nav>button{min-width:65px;font-size:10px}
+[data-mission=exhibition] .game-nav span{font-size:19px}
+[data-mission=exhibition] .guide-panel{width:310px;bottom:23px}
+.exhibit-toolbar{display:flex;justify-content:space-between;gap:8px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #bcae8e4a}
+.exhibit-toolbar button{font-size:11px;background:transparent;border:0;padding:6px 0;color:#526d7c;border-radius:5px}
+.exhibit-toolbar b{color:#149aa9;margin-left:4px}
+.exhibit-selector{display:flex;gap:7px;margin-bottom:22px}
+.exhibit-selector button{flex:1;border:1px solid #c6cec6;border-radius:12px;background:#f6f5ed;font-size:17px;padding:10px 6px;color:#2b5970}
+.exhibit-selector span{font-size:10px;margin-left:4px;color:#7a8c91}
+.exhibit-selector button.selected{background:#ddf4ef;border-color:#3ca7ae;box-shadow:inset 0 0 0 1px #70cbd0}
+.exhibit-kicker{color:#aa8951;font-size:9px;letter-spacing:1.5px;margin-bottom:10px}
+[data-mission=exhibition] #control-dock h3{padding-left:0;font-size:20px;line-height:1.45;margin:7px 0 14px}
+[data-mission=exhibition] #control-dock h3:before{display:none}
+[data-mission=exhibition] #control-dock p{color:#607a89;line-height:1.9;font-size:12px}
+.clue-paper{position:relative;background:linear-gradient(120deg,#f2e8cf,#fff7e3);border:1px solid #d7bc835c;border-left:3px solid #bc9959;padding:16px 14px;border-radius:3px 12px 12px 3px;color:#4c5e63;font-size:12px;line-height:1.9;margin:18px 0}
+.clue-paper span{display:block;color:#9c7f48;font-size:9px;letter-spacing:1px;margin-bottom:7px}
+.exhibit-answers{display:grid;gap:8px;margin:16px 0}
+.exhibit-answers button{border:1px solid #c8d6d0;border-radius:11px;background:#fafcf7;padding:12px;text-align:left;color:#355b6b;font-size:12px}
+.exhibit-answers button:before{content:'◇';color:#22a2ad;margin-right:12px}
+.exhibit-answers button:hover{background:#dcefe9;border-color:#35a5b0}
+.exhibit-primary{display:block;width:100%;margin-top:16px;padding:14px 12px;border:1px solid #a8ece6;border-radius:16px;background:linear-gradient(120deg,#16b8c3,#087e9e);box-shadow:0 5px 15px #168b9a26;color:white;font-size:12px;letter-spacing:.4px}
+.exhibit-primary:hover{filter:brightness(1.08)}
+.exhibit-text{display:block;background:none;color:#4f7f8e;border:0;font-size:11px;padding:14px 0;width:100%;text-align:center}
+.exhibit-code{display:flex;gap:11px;align-items:center;border:1px solid #bedac7;background:#ecf4df;border-radius:12px;padding:13px;color:#567b67;font-size:11px;margin-top:16px}
+.exhibit-code strong{font-size:29px;font-family:Georgia,serif;color:#8b6b36;margin-left:auto}
+.exhibit-code span{font-size:9px;max-width:40px;line-height:1.7}
+.exhibit-chapters{display:grid;gap:10px;margin:20px 0;font-size:11px;color:#9c9e93}
+.exhibit-chapters span{display:block;border-bottom:1px solid #b9b6a633;padding:10px 0}
+.exhibit-chapters b{float:right;font-weight:500}
+.exhibit-chapters .current{color:#188c9e}.exhibit-chapters .complete{color:#6b986e}
+.exhibit-notes{display:grid;gap:10px}.exhibit-notes article{display:flex;gap:12px;border:1px solid #ddcfaa88;border-radius:12px;padding:12px;background:#fffdf4}.exhibit-notes article>span{color:#c39d51;font-size:23px}.exhibit-notes strong{font-size:12px}.exhibit-notes article p{font-size:11px!important;margin:7px 0!important}.exhibit-notes small{color:#92723e;font-size:10px}.exhibit-notes small b{font-size:21px;margin-left:9px}.exhibit-notes .unread{opacity:.55;border-style:dashed}
+.exhibit-score{display:flex;gap:5px;align-items:center;font-size:9px;border-top:1px solid #d9d2c1;padding-top:15px;margin-top:16px;color:#98a293}
+.exhibit-score strong{color:#a2874c;font-size:13px}.exhibit-score span{margin-left:auto}
+.exhibit-lock{border:1px dashed #c7baa2;border-radius:12px;background:#eee9dc;padding:18px 14px;color:#9b8b6d;font-size:12px;line-height:1.9}.exhibit-lock.success{background:#e1f1e5;color:#4b8676;border-color:#a4ceba}
+.frequency-dials{display:flex;justify-content:center;gap:16px;margin:20px 0}.frequency-dials>div{display:grid;justify-items:center;border-radius:14px;border:1px solid #cab079;background:#e7dcc1;box-shadow:inset 0 2px 8px #91764728;overflow:hidden;width:65px}.frequency-dials button{border:0;background:transparent;padding:8px;font-size:18px;color:#9d8149;width:100%}.frequency-dials output{display:block;font-size:35px;font-family:Georgia,serif;color:#25495b;line-height:1.5;background:#fffbf0;width:100%;text-align:center;border-block:1px solid #d6c393}
+.route-progress{display:flex;align-items:center;justify-content:center;gap:14px;margin:20px 0;color:#bdc6ba}.route-progress span{display:grid;place-items:center;width:36px;height:36px;border:1px solid #a9b4a8;border-radius:50%;font-size:13px}.route-progress .lit{background:#12a7b4;color:white;border-color:#13acb6;box-shadow:0 0 15px #2dc9c947}
+[data-mission=exhibition] #control-dock .exhibit-micro{font-size:10px;color:#91a1a1;margin-top:18px}
+.exhibit-beacon{font-family:inherit;min-width:35px;min-height:35px;padding:7px 11px;border-width:1px;font-size:11px;background:#fff8e7ee;box-shadow:0 5px 16px #18445530,0 0 0 4px #e6e2bf36}
+.exhibit-beacon[hidden]{display:none!important}
+[data-mission=exhibition] button:focus-visible{outline:3px solid #1a9aaf;outline-offset:3px}
+[data-mission=exhibition] #action-feedback{font-size:12px;max-width:600px;top:100px;line-height:1.7}
+@media(max-width:1100px) and (min-width:761px){[data-mission=exhibition] .mission-console{width:280px;right:16px;top:105px;padding:14px 17px}[data-mission=exhibition] .game-info{width:195px;left:18px}[data-mission=exhibition] .game-nav{right:315px}[data-mission=exhibition] .guide-panel{width:265px}.exhibit-selector{margin-bottom:14px}}
+@media(max-width:760px){[data-mission=exhibition] .game-info{top:113px;width:180px;padding:11px 15px!important}[data-mission=exhibition] .game-info h1{font-size:18px}[data-mission=exhibition] .mission-console{position:fixed;top:auto;bottom:10px;left:10px;right:10px;width:auto;max-height:37dvh;padding:13px 16px}[data-mission=exhibition] .game-nav{top:75px;right:12px;bottom:auto;left:auto}[data-mission=exhibition] .guide-panel{top:auto;bottom:calc(37dvh + 32px);left:20px;width:calc(100% - 40px);min-height:54px}[data-mission=exhibition] #playfield{height:72dvh;min-height:0}[data-mission=exhibition] .exhibit-toolbar{margin-bottom:10px;padding-bottom:5px}.exhibit-selector{margin-bottom:12px}.exhibit-selector button{padding:6px}.clue-paper{margin:12px 0;padding:11px 12px}.exhibit-answers{grid-template-columns:repeat(3,1fr);gap:6px}.exhibit-answers button{padding:10px 4px;font-size:11px;text-align:center}.exhibit-answers button:before{display:none}[data-mission=exhibition] #control-dock h3{font-size:18px}[data-mission=exhibition] #control-dock p{font-size:11px}.exhibit-chapters{gap:4px;margin:10px 0}.exhibit-chapters span{padding:6px 0}.frequency-dials{margin:12px 0}.frequency-dials>div{width:58px}.frequency-dials output{font-size:28px}[data-mission=exhibition] #action-feedback{top:210px;max-width:90%;font-size:10px}.exhibit-score{margin-top:9px;padding-top:9px}.exhibit-notes article{padding:10px}.exhibit-primary{padding:12px;margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.exhibit-primary,.exhibit-beacon{transition:none}}
+
+[data-mission=exhibition]:has(.screen:not([hidden])) .mission-console{visibility:hidden}
+/* Physical inspection and cross-reference tools. */
+.inspect-rotation,.module-inventory,.module-slots{display:flex;gap:7px;margin:14px 0}
+.inspect-rotation button{flex:1;border:1px solid #bfcfc9;border-radius:10px;background:#f5f6ed;padding:12px 3px;color:#305568;font-size:11px;min-height:44px}
+.module-inventory button,.module-slots button{flex:1;min-width:0;min-height:72px;border:1px solid #cfba8e;border-radius:14px;background:linear-gradient(150deg,#fffdf4,#e9dfc4);padding:10px 4px;color:#25495d}
+.module-inventory b,.module-slots b{display:block;font-size:27px;line-height:1.3}.module-inventory small,.module-slots small{font-size:9px}
+.module-inventory [aria-pressed=true]{border-color:#13a6b4;background:#d9f5ef;box-shadow:0 0 0 2px #68c9cc66}
+.module-slots button{border:1px dashed #a08a61;background:#1d3d4e;color:#ead3a0}.module-slots button:disabled{opacity:1;background:#236671;border-style:solid;color:#e2ffed}
+.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.evidence-card{background:#fffbed;border:1px solid #cfb98b80;border-radius:12px;padding:12px 8px;text-align:center}.evidence-card .note-symbol{display:block;color:#b68a43;font-size:27px}.evidence-card strong{font-size:11px}.evidence-card p{font-size:10px!important;line-height:1.6!important}.evidence-card small{font-size:10px;color:#9a7138}.evidence-card.unread{opacity:.5}
+.chart-diagram{display:flex;align-items:center;justify-content:center;gap:16px;margin:20px 0;color:#b99451}.chart-diagram span{font-size:26px;text-align:center}.chart-diagram small{display:block;font-size:10px;color:#4d7383;margin-top:5px}
+.frequency-dials output small{display:block;font:10px sans-serif;color:#9a8058;padding-bottom:9px}
+[data-mission=exhibition] button:disabled{cursor:default}.inspect-rotation button:disabled{opacity:.45}
+[data-mission=exhibition] .mission-console:has(.evidence-grid){width:420px}
+@media(max-width:760px){[data-mission=exhibition] .mission-console:has(.evidence-grid){width:auto}.module-inventory button,.module-slots button{min-height:64px}.evidence-card{padding:9px 5px}.inspect-rotation button{min-height:44px}}

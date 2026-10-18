@@ -1,0 +1,30 @@
+[
+  {
+    "id": "xingzai",
+    "triangles": 115863,
+    "bytes": 7728081,
+    "animations": [
+      "Jump",
+      "Run",
+      "Walk"
+    ],
+    "baseColorResolution": [
+      3072,
+      3072
+    ]
+  },
+  {
+    "id": "xunbao",
+    "triangles": 114999,
+    "bytes": 6197099,
+    "animations": [
+      "Jump",
+      "Run",
+      "Walk"
+    ],
+    "baseColorResolution": [
+      3072,
+      3072
+    ]
+  }
+]

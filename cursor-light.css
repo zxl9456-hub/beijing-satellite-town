@@ -1,0 +1,7 @@
+/* A small accent under the native pointer, confined to the 3D canvas. */
+#cursor-light-pointer{position:fixed;left:0;top:0;width:0;height:0;z-index:40;pointer-events:none!important;user-select:none}
+#cursor-light-pointer::before{content:"";position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#a5f5ff30 0,#37c9e51c 35%,transparent 72%)}
+#cursor-light-pointer::after{content:"";position:absolute;left:3px;top:5px;width:3px;height:3px;border-radius:50%;background:#9ceaf1;box-shadow:0 0 3px #2ab7cd80}
+.cursor-click{position:fixed;z-index:40;width:16px;height:16px;margin:-8px 0 0 -8px;border:1px solid #69d9e5;border-radius:50%;pointer-events:none!important;user-select:none;box-shadow:0 0 5px #3ac8dc30;animation:cursor-confirm .24s ease-out both}
+@keyframes cursor-confirm{0%{transform:scale(.55);opacity:.75}100%{transform:scale(1.75);opacity:0}}
+@media(prefers-reduced-motion:reduce),(hover:none){#cursor-light-pointer,.cursor-click{display:none!important}}
