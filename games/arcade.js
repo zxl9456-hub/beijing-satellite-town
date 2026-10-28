@@ -1,8 +1,8 @@
-import {flightPort,dressShip,runnerRoute,orbitalObject} from '../chapter-arcade-art.js?art=38a';
-import {gate} from '../chapter-props.js?art=38a';
-import {part,pavement,flowerbed,lightPost,bench,finishMaterial,batchStatic} from '../mission-scenery.js?art=38a';
-import {THREE,box,sphere,cylinder,ring,label,tree,building,star,palette,material} from '../mission-stage.js?art=38a';
-import {ships} from '../mission-data.js?art=38a';
+import {flightPort,dressShip,runnerRoute,orbitalObject} from '../chapter-arcade-art.js?art=39a';
+import {gate} from '../chapter-props.js?art=39a';
+import {part,pavement,flowerbed,lightPost,bench,finishMaterial,batchStatic} from '../mission-scenery.js?art=39a';
+import {THREE,box,sphere,cylinder,ring,label,tree,building,star,palette,material} from '../mission-stage.js?art=39a';
+import {ships} from '../mission-data.js?art=39a';
 export function createArcade(stage,state,mission,api){
  const root=stage.content,dock=api.dock;stage.arcade=true;let held=new Set(),target=null,swipe=null;const off=[],effects=[];let zone=-1;
  function on(el,type,fn,opts){el.addEventListener(type,fn,opts);off.push(()=>el.removeEventListener(type,fn,opts));}

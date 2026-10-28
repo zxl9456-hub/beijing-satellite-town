@@ -1,6 +1,6 @@
-import {ResearchState} from './research-state.js?art=38a';
-import {ExhibitionState} from './exhibition-state.js?art=38a';
-import {parts,guests} from './mission-data.js?art=38a';
+import {ResearchState} from './research-state.js?art=39a';
+import {ExhibitionState} from './exhibition-state.js?art=39a';
+import {parts,guests} from './mission-data.js?art=39a';
 export const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
 export function seeded(seed=19){let a=seed>>>0;return()=>{a=(a*1664525+1013904223)>>>0;return a/4294967296;};}
 export class PuzzleState{

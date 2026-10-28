@@ -6,12 +6,12 @@ import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {SSAOPass} from 'three/addons/postprocessing/SSAOPass.js';
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
-import {createRegionMaterials} from './region-materials.js?art=38a';
-import {createArchitecturalSky} from './architectural-lighting.js?art=38a';
-import {createSurfaceFeedback} from './surface-feedback.js?art=38a';
-import {createArchitectureTour} from './architecture-tour.js?art=38a';
-import {heroBuilding} from './architecture-details.js?art=38a';
-import {regions,exploreURL} from './regions.js?art=38a';
+import {createRegionMaterials} from './region-materials.js?art=39a';
+import {createArchitecturalSky} from './architectural-lighting.js?art=39a';
+import {createSurfaceFeedback} from './surface-feedback.js?art=39a';
+import {createArchitectureTour} from './architecture-tour.js?art=39a';
+import {heroBuilding} from './architecture-details.js?art=39a';
+import {regions,exploreURL} from './regions.js?art=39a';
 
 // One GPU context serves the visible cards and the enlarged viewer. Each card
 // retains its last rendered frame; idle and off-screen cards do not render.

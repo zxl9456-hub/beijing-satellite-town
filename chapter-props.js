@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {part,finishMaterial,flowerbed} from './mission-scenery.js?art=38a';
-import {V,disk,arc,line,screen,gate} from './chapter-art.js?art=38a';
+import {part,finishMaterial,flowerbed} from './mission-scenery.js?art=39a';
+import {V,disk,arc,line,screen,gate} from './chapter-art.js?art=39a';
 
 export function radarConsole(parent){
  const g=new THREE.Group();parent.add(g);

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import {part,pavement,finishMaterial,flowerbed,plantedTree,glazedBuilding,lightPost,bench,batchStatic,makeGround} from './mission-scenery.js?art=38a';
-import {V,disk,arc,line,heroAsset} from './chapter-art.js?art=38a';
-import {gate} from './chapter-props.js?art=38a';
-import {label} from './mission-stage.js?art=38a';
+import {part,pavement,finishMaterial,flowerbed,plantedTree,glazedBuilding,lightPost,bench,batchStatic,makeGround} from './mission-scenery.js?art=39a';
+import {V,disk,arc,line,heroAsset} from './chapter-art.js?art=39a';
+import {gate} from './chapter-props.js?art=39a';
+import {label} from './mission-stage.js?art=39a';
 
 export function flightPort(stage,root){
  pavement(root,55,85,0,-20,-.8);const runway=part(root,20.6,.2,58,'glass',0,-.55,-17);runway.material=finishMaterial('glass').clone();runway.material.color.set('#263e4b');runway.material.roughness=.34;

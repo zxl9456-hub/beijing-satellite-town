@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
-import {configurePhotographicTree} from './vegetation-materials.js?art=38a';
+import {configurePhotographicTree} from './vegetation-materials.js?art=39a';
 
 function randomSource(seed=4819){return()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
 const rand=randomSource();

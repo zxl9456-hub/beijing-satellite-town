@@ -1,24 +1,24 @@
-import {pixelRatioFor,RenderBudget,yieldToBrowser} from './render-budget.js?art=38a';
-import {townAudio} from './town-audio.js?art=38a';
-import {mountMissionEntry} from './mission-entry.js?art=38a';
+import {pixelRatioFor,RenderBudget,yieldToBrowser} from './render-budget.js?art=39a';
+import {townAudio} from './town-audio.js?art=39a';
+import {mountMissionEntry} from './mission-entry.js?art=39a';
 import * as THREE from 'three';
-import {GROWTH_DURATION,arrivalAt,growthPhase,growthVertex,growthFragment,bindGrowthMaterial} from './building-growth.js?art=38a';
-import {createParticleWorkbench} from './particle-workbench.js?art=38a';
-import {createSurfaceFeedback} from './surface-feedback.js?art=38a';
-import {createArchitectureTour} from './architecture-tour.js?art=38a';
-import {readExplorationView,saveExplorationView} from './exploration-flow.js?art=38a';
+import {GROWTH_DURATION,arrivalAt,growthPhase,growthVertex,growthFragment,bindGrowthMaterial} from './building-growth.js?art=39a';
+import {createParticleWorkbench} from './particle-workbench.js?art=39a';
+import {createSurfaceFeedback} from './surface-feedback.js?art=39a';
+import {createArchitectureTour} from './architecture-tour.js?art=39a';
+import {readExplorationView,saveExplorationView} from './exploration-flow.js?art=39a';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
-import {createRegionMaterials} from './region-materials.js?art=38a';
-import {createRegionLandscape} from './region-landscape.js?art=38a';
-import {CachedAOPass as SSAOPass} from './cached-ao.js?art=38a';
-import {CinematicLensPass,createFilmGrade} from './cinematic-lens.js?art=38a';
-import {createArchitecturalSky} from './architectural-lighting.js?art=38a';
-import {regions,regionById,exploreURL,sharedSpaceFacts,buildingHighlights} from './regions.js?art=38a';
+import {createRegionMaterials} from './region-materials.js?art=39a';
+import {createRegionLandscape} from './region-landscape.js?art=39a';
+import {CachedAOPass as SSAOPass} from './cached-ao.js?art=39a';
+import {CinematicLensPass,createFilmGrade} from './cinematic-lens.js?art=39a';
+import {createArchitecturalSky} from './architectural-lighting.js?art=39a';
+import {regions,regionById,exploreURL,sharedSpaceFacts,buildingHighlights} from './regions.js?art=39a';
 const $=s=>document.querySelector(s);const params=new URLSearchParams(location.search);
 const region=regionById(params.get('region'))??regions[0];
 let selectedId=region.buildings.includes(Number(params.get('building')))?Number(params.get('building')):region.buildings[0];
@@ -154,7 +154,7 @@ function viewState(){return {camera:camera.position.toArray(),target:controls.ta
 function applyView(v){camera.position.fromArray(v.camera);controls.target.fromArray(v.target);camera.fov=v.fov;camera.updateProjectionMatrix();growth=v.growth;clock=v.clock;particleUniforms.uPulse.value=v.pulse??0;cohesion=v.cohesion;modelMode=v.mode;paused=false;flight=null;controls.autoRotate=false;points.visible=modelMode==='particles';selectedId=region.buildings.includes(v.selectedId)?v.selectedId:selectedId;particleUniforms.uSelected.value=selectedId;updateSelectedLabel();document.querySelectorAll('[data-render]').forEach(b=>{b.classList.toggle('active',b.dataset.render===modelMode);b.setAttribute('aria-pressed',String(b.dataset.render===modelMode));});}
 function prepareInteraction(){autoReveal=false;workbench?.setMaterial(false);growth=1;paused=false;modelMode='particles';points.visible=true;controls.autoRotate=false;$('#model-rotate').setAttribute('aria-pressed','false');$('#growth-pause').setAttribute('aria-pressed','false');$('#growth-pause').textContent='Ⅱ 暂停动态';document.querySelectorAll('[data-render]').forEach(b=>{const active=b.dataset.render==='particles';b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});}
 function initWorkbench(){workbench=createParticleWorkbench({canvas,stage,camera,controls,home:points.geometry.getAttribute('aHome').array,span,region,meta,getView:viewState,applyView,prepare:prepareInteraction,
- resources:async()=>{if(!sourceModel||!model)throw new Error('完整建筑尚未载入');const response=await fetch('./particle-motion.js'),visual=await fetch('./building-growth.js?art=38a');if(!response.ok||!visual.ok)throw new Error('模拟规则载入失败');return new Map([['source.points',sourcePoints],['source.glb.gz',sourceModel],['region.json',JSON.stringify(meta)],['particle-motion.js',await response.text()],['building-growth.js',await visual.text()]]);},
+ resources:async()=>{if(!sourceModel||!model)throw new Error('完整建筑尚未载入');const response=await fetch('./particle-motion.js'),visual=await fetch('./building-growth.js?art=39a');if(!response.ok||!visual.ok)throw new Error('模拟规则载入失败');return new Map([['source.points',sourcePoints],['source.glb.gz',sourceModel],['region.json',JSON.stringify(meta)],['particle-motion.js',await response.text()],['building-growth.js',await visual.text()]]);},
  updateGeometry:p=>{points.geometry.getAttribute('position').array=p;points.geometry.getAttribute('position').needsUpdate=true;},
  onChange:m=>{if(!workbench?.isPlaying()){cohesion+=((m.moving===0?1:0)-cohesion)*(m.moving===0?.08:.22);if(cohesion>.997)cohesion=1;if(cohesion<.0003)cohesion=0;}}
  });}

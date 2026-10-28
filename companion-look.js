@@ -1,15 +1,20 @@
 import * as THREE from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 
-// A continuous sky reflection gives animated characters broad tonal gradients,
-// without the rectangular studio highlights that made them read as vinyl toys.
+// Bake broad softbox reflections once so glossy character surfaces read clearly
+// without additional per-frame lights or postprocessing passes.
 function characterEnvironment(renderer){
-  const studio=new THREE.Scene(),geometry=new THREE.SphereGeometry(20,32,24);
+  const studio=new THREE.Scene(),geometry=new THREE.SphereGeometry(20,64,48);
   const p=geometry.attributes.position,colors=new Float32Array(p.count*3);
+  const direction=new THREE.Vector3(),softbox=new THREE.Vector3(-.55,.72,.72).normalize(),rim=new THREE.Vector3(.8,.35,-.5).normalize();
   const sky=new THREE.Color('#ceddec'),horizon=new THREE.Color('#a5b2c1'),ground=new THREE.Color('#756c63'),color=new THREE.Color();
   for(let i=0;i<p.count;i++){
     const y=p.getY(i)/20;
     color.copy(y>=0?horizon:ground).lerp(y>=0?sky:horizon,y>=0?Math.sqrt(y):1+y);
+    direction.set(p.getX(i),p.getY(i),p.getZ(i)).normalize();
+    const highlight=5.0*Math.pow(Math.max(0,direction.dot(softbox)),24);
+    const edge=.9*Math.pow(Math.max(0,direction.dot(rim)),16);
+    color.r+=highlight+edge*.82; color.g+=highlight*.98+edge*.9; color.b+=highlight*.94+edge;
     color.toArray(colors,i*3);
   }
   geometry.setAttribute('color',new THREE.BufferAttribute(colors,3));
@@ -26,9 +31,9 @@ export function createCompanionStudio(renderer,scene,{world=false}={}){
     environment=pmrem.fromScene(studio,.035);studio.dispose();pmrem.dispose();
   }else environment=characterEnvironment(renderer);
   scene.environment=environment.texture;
-  scene.environmentIntensity=world?.46:.80;
+  scene.environmentIntensity=world?.46:.88;
   if(!world)renderer.shadowMap.type=THREE.VSMShadowMap;
-  const hemisphere=new THREE.HemisphereLight(world?'#e8f2ff':'#d8e6fa',world?'#b4b4b7':'#8a705c',world?.38:.32);
+  const hemisphere=new THREE.HemisphereLight(world?'#e8f2ff':'#d8e6fa',world?'#b4b4b7':'#8a705c',world?.38:.36);
   scene.add(hemisphere);
   const key=new THREE.DirectionalLight(world?'#fff8ef':'#fff5eb',world?2.45:3.1);
   key.position.set(world?-3.8:-5,world?5:6,world?4.5:3.8);key.target.position.set(0,1,0);
@@ -56,12 +61,12 @@ export function prepareCompanionMaterials(model,key,{directLightScale=1}={}){
     if(!source.isMeshStandardMaterial)return source;
     const material=new THREE.MeshPhysicalMaterial();
     THREE.MeshStandardMaterial.prototype.copy.call(material,source);
-    material.name=`${source.name} / ${key} animation finish`;
-    material.envMapIntensity=.62;material.ior=1.43;material.specularIntensity=.68;
-    material.clearcoat=.025;material.clearcoatRoughness=.5;material.metalness=0;
-    material.roughness=1;material.normalScale.setScalar(.07);
+    material.name=`${source.name} / ${key} luminous animation finish`;
+    material.envMapIntensity=.88;material.ior=1.46;material.specularIntensity=.95;
+    material.clearcoat=.36;material.clearcoatRoughness=.22;material.metalness=0;
+    material.roughness=1;material.normalScale.setScalar(.045);
     if(material.map)material.map.anisotropy=4;
-    material.emissiveIntensity=key==='xunbao'?.48:0;
+    material.emissiveIntensity=key==='xunbao'?.56:0;
     if(!material.map)material.color.set('#e4e5e5');
     material.onBeforeCompile=shader=>{
       shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 ipLocalPosition;')
@@ -93,17 +98,19 @@ export function prepareCompanionMaterials(model,key,{directLightScale=1}={}){
           diffuseColor.rgb=clamp(mix(ipColor,ipSkinColor,ipSkin),0.0,1.0);
         `).replace('#include <roughnessmap_fragment>',`
           #include <roughnessmap_fragment>
-          roughnessFactor=mix(0.52,0.46,ipBlue);
-          roughnessFactor=mix(roughnessFactor,0.46,ipOrange);
-          roughnessFactor=mix(roughnessFactor,0.70,ipSuit);
-          roughnessFactor=mix(roughnessFactor,0.76,ipSkin);
-          roughnessFactor=mix(roughnessFactor,0.30,max(ipEyes,ipDisplay));
+          roughnessFactor=mix(0.26,0.21,ipBlue);
+          roughnessFactor=mix(roughnessFactor,0.21,ipOrange);
+          roughnessFactor=mix(roughnessFactor,0.38,ipSuit);
+          roughnessFactor=mix(roughnessFactor,0.52,ipSkin);
+          roughnessFactor=mix(roughnessFactor,0.14,max(ipEyes,ipDisplay));
         `).replace('#include <lights_physical_fragment>',`
           #include <lights_physical_fragment>
-          material.clearcoat=mix(0.012,0.065,max(ipEyes,ipDisplay));
-          material.clearcoat*=1.0-max(ipSuit,ipSkin);
-          material.clearcoatRoughness=mix(0.55,0.32,max(ipEyes,ipDisplay));
-          material.specularColor*=mix(0.75,0.35,max(ipSkin,ipSuit));
+          material.clearcoat=mix(0.36,0.50,max(ipBlue,ipOrange));
+          material.clearcoat=mix(material.clearcoat,0.16,ipSuit);
+          material.clearcoat=mix(material.clearcoat,0.04,ipSkin);
+          material.clearcoat=mix(material.clearcoat,0.65,max(ipEyes,ipDisplay));
+          material.clearcoatRoughness=mix(0.24,0.15,max(ipEyes,ipDisplay));
+          material.specularColor*=mix(1.0,0.62,ipSkin);
         `).replace('#include <lights_fragment_end>',`
           #include <lights_fragment_end>
           // Compensate for the brighter architectural sun on game characters only.
@@ -114,7 +121,7 @@ export function prepareCompanionMaterials(model,key,{directLightScale=1}={}){
           reflectedLight.indirectDiffuse+=diffuseColor.rgb*vec3(0.10,0.042,0.025)*ipSkin*(0.35+ipSoftEdge*0.65);
         `);
     };
-    material.customProgramCacheKey=()=>`ip-animation-v38-${key}-${directLightScale}`;
+    material.customProgramCacheKey=()=>`ip-luminous-v39-${key}-${directLightScale}`;
     converted.set(source,material);source.dispose();return material;
   }
   model.traverse(object=>{if(object.isMesh)object.material=Array.isArray(object.material)?object.material.map(convert):convert(object.material);});

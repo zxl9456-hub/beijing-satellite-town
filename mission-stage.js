@@ -1,9 +1,9 @@
-import {pixelRatioFor,RenderBudget} from './render-budget.js?art=38a';
+import {pixelRatioFor,RenderBudget} from './render-budget.js?art=39a';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {createCompanionStudio,prepareCompanionMaterials} from './companion-look.js?art=38a';
-import {plantedTree,glazedBuilding,createMissionWorld,finishMaterial,surface} from './mission-scenery.js?art=38a';
-import {createMissionLighting} from './mission-lighting.js?art=38a';
+import {createCompanionStudio,prepareCompanionMaterials} from './companion-look.js?art=39a';
+import {plantedTree,glazedBuilding,createMissionWorld,finishMaterial,surface} from './mission-scenery.js?art=39a';
+import {createMissionLighting} from './mission-lighting.js?art=39a';
 export {THREE};
 export const palette={cream:'#f6eee1',white:'#f4f5f2',blue:'#3aadc5',orange:'#ff9e38',navy:'#24465d',green:'#7aa889',gold:'#f8cf75'};
 const mats=new Map();

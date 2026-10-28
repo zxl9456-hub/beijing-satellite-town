@@ -1,11 +1,11 @@
-import {pixelRatioFor,RenderBudget} from './render-budget.js?art=38a';
-import {architectureCard,mountArchitectureGallery} from './architecture-gallery.js?art=38a';
-import {townAudio} from './town-audio.js?art=38a';
+import {pixelRatioFor,RenderBudget} from './render-budget.js?art=39a';
+import {architectureCard,mountArchitectureGallery} from './architecture-gallery.js?art=39a';
+import {townAudio} from './town-audio.js?art=39a';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {createCompanionStudio,prepareCompanionMaterials} from './companion-look.js?art=38a';
-import {createHomeCompanions} from './home-companions.js?art=38a';
-import {regions,exploreURL} from './regions.js?art=38a';
+import {createCompanionStudio,prepareCompanionMaterials} from './companion-look.js?art=39a';
+import {createHomeCompanions} from './home-companions.js?art=39a';
+import {regions,exploreURL} from './regions.js?art=39a';
 const $=s=>document.querySelector(s),hero=$('.hero'),stage=$('#companions-stage'),canvas=$('#companions-canvas');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let paused=reduced.matches;try{if(!reduced.matches)paused=localStorage.getItem('town-home-motion')==='paused';}catch{}
@@ -84,7 +84,7 @@ async function loadBuddy(key){if(loaded.has(key))return loaded.get(key);const re
 async function loadCharacters(){if(contextLost){location.reload();return;}const retry=$('#character-retry');retry.hidden=true;retry.disabled=true;$('#character-status').textContent='探索伙伴正在准备出发';const results=await Promise.allSettled(['xingzai','xunbao'].map(loadBuddy));if(disposed)return;const ok=results.every(r=>r.status==='fulfilled'&&r.value);if(ok){hero.classList.add('characters-ready');stage.dataset.models='ready';$('#character-status').textContent='星仔和讯宝已就绪';}else{stage.dataset.models='fallback';$('#character-status').textContent='暂以静态形象陪伴你，点击可重试三维角色';retry.hidden=false;results.forEach(r=>{if(r.status==='rejected')console.warn('Companion asset',r.reason);});}retry.disabled=false;needsRender=true;}
 let resizeObserver,intersectionObserver;
 try{
- renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(pixelRatioFor(stage.clientWidth,stage.clientHeight,{scale:budget.scale}));renderer.setClearColor(0x000000,0);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(pixelRatioFor(stage.clientWidth,stage.clientHeight,{scale:budget.scale}));renderer.setClearColor(0x000000,0);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.10;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
  scene=new THREE.Scene();interactions=createHomeCompanions(scene,finishInteraction);camera=new THREE.OrthographicCamera(-3,3,1.75,-1.75,.1,60);camera.position.set(0,2.6,8);camera.lookAt(0,1.05,0);
  sky=createCompanionStudio(renderer,scene);
  const ground=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.ShadowMaterial({opacity:.20,color:'#665437'}));ground.rotation.x=-Math.PI/2;ground.position.y=-.018;ground.receiveShadow=true;scene.add(ground);
