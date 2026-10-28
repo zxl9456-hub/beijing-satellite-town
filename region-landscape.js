@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {preparePlants,plantedTree,flowerbed,lightPost,bench,part,batchStatic} from './mission-scenery.js?art=34b';
+import {preparePlants,plantedTree,flowerbed,lightPost,bench,part,batchStatic} from './mission-scenery.js?art=37a';
 
 export function insideFootprint(x,z,poly){let inside=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if((a[1]>z)!==(b[1]>z)&&x<(b[0]-a[0])*(z-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;}
 function signedArea(poly){return poly.reduce((n,p,i)=>{const q=poly[(i+1)%poly.length];return n+p[0]*q[1]-q[0]*p[1];},0)/2;}

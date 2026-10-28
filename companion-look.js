@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 
-// The IP turnarounds use neutral softboxes: white satin shells, enamel trim,
-// and a deep blue display. Keep sunset warmth on the silhouette, off the face.
+// Shared finish for every 3D instance and exported portrait.
+// Broad, quiet reflections on matte shells; only the display keeps a soft gloss.
 export function createCompanionStudio(renderer, scene) {
   const studio = new RoomEnvironment();
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -44,21 +44,26 @@ export function prepareCompanionMaterials(model, key) {
     if (!source.isMeshStandardMaterial) return source;
     const material = new THREE.MeshPhysicalMaterial();
     THREE.MeshStandardMaterial.prototype.copy.call(material, source);
-    material.name = `${source.name} / ${key} reference satin`;
-    material.envMapIntensity = .85;
-    material.ior = 1.46;
-    material.clearcoat = .22;
-    material.clearcoatRoughness = .30;
+    material.name = `${source.name} / ${key} soft matte`;
+    material.envMapIntensity = .24;
+    material.ior = 1.38;
+    material.clearcoat = .06;
+    material.clearcoatRoughness = .65;
     material.metalness = 0;
+    material.specularIntensity = .24;
     material.roughness = 1;
-    material.normalScale.setScalar(.45);
+    material.normalScale.setScalar(.18);
     if (material.map) material.map.anisotropy = 4;
-    material.emissiveIntensity = key === 'xunbao' ? 1.05 : 0;
+    material.emissiveIntensity = key === 'xunbao' ? .40 : 0;
     if (!material.map) {
       material.color.set('#e7e9ec');
-      material.roughness = .48;
-    } else {
+      material.roughness = .78;
+    }
+    {
       material.onBeforeCompile = shader => {
+        shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 ipLocalPosition;')
+          .replace('#include <begin_vertex>', '#include <begin_vertex>\nipLocalPosition = position;');
+        shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 ipLocalPosition;');
         // Classify the existing UV atlas rather than replace or paint over it.
         // Skin and printed eyes retain their source color and detail.
         shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `
@@ -81,30 +86,54 @@ export function prepareCompanionMaterials(model, key) {
             * smoothstep(0.35, 0.65, ipBase.r);
           float ipShell = (1.0 - smoothstep(0.12, 0.32, ipSaturation))
             * smoothstep(0.15, 0.45, ipLuma);
-          vec3 ipShellColor = ipBase + (vec3(1.0) - ipBase) * 0.34;
+          // Remove the glossy lighting baked into the white atlas while retaining seams/AO.
+          vec3 ipShellColor = vec3(0.73, 0.735, 0.72) * mix(0.78, 1.0, smoothstep(0.06, 0.8, ipLuma));
+          float ipCloth = ${key === 'xingzai' ? '1.0' : '0.0'} * ipShell
+            * (1.0 - smoothstep(0.77, 0.88, ipLocalPosition.y)) * smoothstep(0.10, 0.17, ipLocalPosition.y);
+          // Object-space weave follows the skinned model. Fade subpixel fibers to prevent shimmer.
+          vec2 ipWeaveUV = vec2(ipLocalPosition.x + ipLocalPosition.z * 0.6, ipLocalPosition.y) * 340.0;
+          float ipWeaveAA = 1.0 - smoothstep(0.7, 2.8, max(fwidth(ipWeaveUV.x), fwidth(ipWeaveUV.y)));
+          float ipWeave = sin(ipWeaveUV.x) * sin(ipWeaveUV.y) * ipWeaveAA;
+          vec3 ipGrainUV = ipLocalPosition * 480.0;
+          float ipGrainAA = 1.0 - smoothstep(0.7, 3.0, length(fwidth(ipGrainUV)));
+          float ipGrain = sin(ipGrainUV.x + sin(ipGrainUV.z)) * sin(ipGrainUV.y * 1.17) * ipGrainAA;
           vec3 ipColor = mix(ipBase, ipShellColor, ipShell);
-          ipColor = mix(ipColor, ipBase * vec3(0.08, 0.80, 0.95), ipBlue);
-          ipColor = mix(ipColor, ipBase * vec3(1.32, 0.76, 0.18), ipOrange);
-          vec3 ipSkinColor = mix(vec3(ipLuma), ipBase, 1.38) * vec3(1.0, 0.97, 0.97);
+          vec3 ipBlueColor = mix(ipBase * vec3(0.32, 0.79, 0.86), vec3(0.075, 0.32, 0.40), 0.32);
+          ipColor = mix(ipColor, ipBlueColor, ipBlue * (1.0 - ipDisplay));
+          vec3 ipOrangeColor = mix(ipBase * vec3(1.02, 0.82, 0.50), vec3(0.64, 0.30, 0.075), 0.30);
+          ipColor = mix(ipColor, ipOrangeColor, ipOrange);
+          ipColor *= 1.0 + ipWeave * ipCloth * 0.075 + ipGrain * ipShell * (1.0 - ipCloth) * 0.018;
+          vec3 ipSkinColor = mix(vec3(ipLuma), ipBase, 1.12) * vec3(1.0, 0.97, 0.97);
           diffuseColor.rgb = clamp(mix(ipColor, ipSkinColor, ipSkin), 0.0, 1.0);
         `).replace('#include <roughnessmap_fragment>', `
           #include <roughnessmap_fragment>
-          float ipMicroRoughness = (roughnessFactor - 0.45) * 0.12;
-          roughnessFactor = mix(0.46, 0.29, ipBlue);
-          roughnessFactor = mix(roughnessFactor, 0.27, ipOrange);
-          roughnessFactor = mix(roughnessFactor, 0.19, ipDisplay);
-          roughnessFactor = mix(roughnessFactor, 0.59, ipSkin);
-          roughnessFactor = clamp(roughnessFactor + ipMicroRoughness, 0.16, 0.55);
+          float ipMicroRoughness = (roughnessFactor - 0.45) * 0.06;
+          roughnessFactor = mix(0.88, 0.76, ipBlue);
+          roughnessFactor = mix(roughnessFactor, 0.78, ipOrange);
+          roughnessFactor = mix(roughnessFactor, 0.44, ipDisplay);
+          roughnessFactor = mix(roughnessFactor, 0.93, ipSkin);
+          roughnessFactor = mix(roughnessFactor, 0.98, ipCloth);
+          roughnessFactor = clamp(roughnessFactor + ipMicroRoughness, 0.42, 1.0);
+        `).replace('#include <normal_fragment_maps>', `
+          #include <normal_fragment_maps>
+          // Small real surface relief, not a noisy color overlay.
+          float ipRelief = ipWeave * ipCloth * 0.00045 + ipGrain * ipShell * (1.0 - ipCloth) * 0.00016;
+          vec3 ipSigmaX = dFdx(-vViewPosition), ipSigmaY = dFdy(-vViewPosition);
+          vec3 ipRx = cross(ipSigmaY, normal), ipRy = cross(normal, ipSigmaX);
+          float ipDet = dot(ipSigmaX, ipRx);
+          vec3 ipGradient = sign(ipDet) * (dFdx(ipRelief) * ipRx + dFdy(ipRelief) * ipRy);
+          normal = normalize(max(abs(ipDet), 0.0000000001) * normal - ipGradient);
+
         `).replace('#include <lights_physical_fragment>', `
           #include <lights_physical_fragment>
-          material.clearcoat = mix(0.16, 0.36, max(ipBlue, ipOrange));
-          material.clearcoat = mix(material.clearcoat, 0.28, ipDisplay);
-          material.clearcoat = mix(material.clearcoat, 0.02, ipSkin);
-          material.clearcoatRoughness = mix(0.30, 0.18, ipDisplay);
-          material.specularColor *= mix(1.0, 0.62, max(ipDisplay, ipSkin));
+          material.clearcoat = 0.0;
+          material.clearcoat = mix(material.clearcoat, 0.025, ipDisplay);
+          material.clearcoat = mix(material.clearcoat, 0.0, ipSkin);
+          material.clearcoatRoughness = mix(0.85, 0.50, ipDisplay);
+          material.specularColor *= mix(0.38, 0.70, ipDisplay) * mix(1.0, 0.25, max(ipSkin, ipCloth));
         `);
       };
-      material.customProgramCacheKey = () => `ip-reference-satin-v15-${key}`;
+      material.customProgramCacheKey = () => `ip-fabric-mineral-v37-${key}`;
     }
     converted.set(source, material);
     source.dispose();

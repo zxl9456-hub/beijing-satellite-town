@@ -1,5 +1,5 @@
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {yieldToBrowser} from './render-budget.js?art=34b';
+import {yieldToBrowser} from './render-budget.js?art=37a';
 // Reuse the same mesh/material/interaction objects; only the geometry changes.
 export function createParkDetail({town,info,materials,onChange=()=>{}}){
  const records=[];town.traverse(mesh=>{if(mesh.isMesh)records.push({mesh,overview:mesh.geometry,full:null});});

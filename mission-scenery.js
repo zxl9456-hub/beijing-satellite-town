@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
-import {configurePhotographicTree} from './vegetation-materials.js?art=34b';
+import {configurePhotographicTree} from './vegetation-materials.js?art=37a';
 
 // Shared scenery uses the park's existing photographic trees and uploaded flowers.
 // Gameplay coordinates and collision geometry remain in mission-core.js.
@@ -79,9 +79,9 @@ export function pavement(parent,w,d,x=0,z=0,y=-.02){const map=surface('paving').
 export function makeGround(parent,w,d,color='#a7ad7d',x=0,z=0){const map=surface('grass').clone();map.needsUpdate=true;map.repeat.set(w/3,d/3);return part(parent,w,.12,d,new THREE.MeshStandardMaterial({color,map,roughness:.95}),x,-.14,z,0);}
 export async function createMissionWorld(stage,mission){
  await preparePlants();if(stage.disposed)return;
- if(mission.n===2){const {createResearchEnvironment}=await import('./research-environment.js?art=34b');return createResearchEnvironment(stage);}
- if(mission.n===1){const {createExhibitionEnvironment}=await import('./exhibition-environment.js?art=34b');return createExhibitionEnvironment(stage);}
- if(mission.n>=3){const {createChapterEnvironment}=await import('./chapter-art.js?art=34b');return createChapterEnvironment(stage,mission);}
+ if(mission.n===2){const {createResearchEnvironment}=await import('./research-environment.js?art=37a');return createResearchEnvironment(stage);}
+ if(mission.n===1){const {createExhibitionEnvironment}=await import('./exhibition-environment.js?art=37a');return createExhibitionEnvironment(stage);}
+ if(mission.n>=3){const {createChapterEnvironment}=await import('./chapter-art.js?art=37a');return createChapterEnvironment(stage,mission);}
  const root=new THREE.Group();root.name='夕照园区 · 游戏环境';stage.scene.add(root);stage.environmentRoot=root;
  const arcade=mission.n===5||mission.n===6;
  if(arcade){const terrain=makeGround(root,150,180,'#b4ba91',0,-65);if(mission.n===5)terrain.position.y=-1.5;{const skyline=new THREE.Group();skyline.position.set(0,0,mission.n===6?-70:-35);root.add(skyline);const m=await stage.regional(mission.id,skyline,mission.n===6?9:5);if(m){const size=new THREE.Box3().setFromObject(m).getSize(new THREE.Vector3()),fit=Math.min(1,32/Math.max(size.x,size.z));m.scale.multiplyScalar(fit);m.position.multiplyScalar(fit);}}return;}

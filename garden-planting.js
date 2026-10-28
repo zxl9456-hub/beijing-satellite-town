@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {addLeafTransmission} from './vegetation-materials.js?art=34b';
+import {addLeafTransmission} from './vegetation-materials.js?art=37a';
 
 const PETAL_COLORS=['#f496b4','#f7b9ce','#ffd061','#c09ae9','#91cdeb','#f39570','#fff2d5'].map(c=>new THREE.Color(c));
 const TREE_TONES=['#d1bd6e','#b0bf78','#88ab65'].map(c=>new THREE.Color(c));

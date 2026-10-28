@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {architectureDetails} from './architecture-details.js?art=34b';
+import {architectureDetails} from './architecture-details.js?art=37a';
 export function createArchitectureTour({host,content,camera,root,region,getBox,onFocus,onChange=()=>{}}){
  const details=architectureDetails(region.id),layer=document.createElement('div');layer.className='tour-hotspots';layer.setAttribute('aria-label','建筑细节热点');host.append(layer);
  const ray=new THREE.Raycaster(),targets=[];root.traverse(o=>{if(o.isMesh&&o.visible)targets.push(o);});let entries=[],current=null,visited=new Set(),enabled=true,hovered=-1,tourDirty=true,lastShow=null,lastWidth=0,lastHeight=0,lastHover=-1;const viewMatrix=new THREE.Matrix4(),projection=new THREE.Matrix4(),anchorCache=new Map();

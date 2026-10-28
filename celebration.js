@@ -1,5 +1,5 @@
-import {THREE,box,cylinder,label,star,fairyLights} from './mission-stage.js?art=34b';
-import {missions} from './mission-data.js?art=34b';
+import {THREE,box,cylinder,label,star,fairyLights} from './mission-stage.js?art=37a';
+import {missions} from './mission-data.js?art=37a';
 export async function createCelebration(stage,api){
  stage.height=13;stage.width=25;stage.camera.position.set(0,12,19);stage.camera.lookAt(0,.8,-.6);stage.resize();stage.ground(19,12,'#bac3a1');box(stage.content,18.6,.1,11.6,'#e6dec7',0,.04);const placements=[[-6,-2.7],[-2,-3.2],[2,-3.2],[6,-2.7],[-5,1],[0,.3],[5,1]],plots=[];
  for(let i=0;i<7;i++){const [x,z]=placements[i],g=new THREE.Group();g.position.set(x,.22,z);stage.content.add(g);const base=cylinder(g,1.7,.16,'#cbd7c5',0,-.05),modelParent=new THREE.Group();g.add(modelParent);label(g,missions[i].region,0,.2,1.6,2.7);const marker=star(g,.23);marker.position.set(0,2,0);marker.visible=false;plots.push({g,base,modelParent,marker});}

@@ -1,11 +1,11 @@
-import {pixelRatioFor,RenderBudget} from './render-budget.js?art=34b';
-import {architectureCard,mountArchitectureGallery} from './architecture-gallery.js?art=34b';
-import {townAudio} from './town-audio.js?art=34b';
+import {pixelRatioFor,RenderBudget} from './render-budget.js?art=37a';
+import {architectureCard,mountArchitectureGallery} from './architecture-gallery.js?art=37a';
+import {townAudio} from './town-audio.js?art=37a';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {createCompanionStudio,prepareCompanionMaterials} from './companion-look.js?art=34b';
-import {createHomeCompanions} from './home-companions.js?art=34b';
-import {regions,exploreURL} from './regions.js?art=34b';
+import {createCompanionStudio,prepareCompanionMaterials} from './companion-look.js?art=37a';
+import {createHomeCompanions} from './home-companions.js?art=37a';
+import {regions,exploreURL} from './regions.js?art=37a';
 const $=s=>document.querySelector(s),hero=$('.hero'),stage=$('#companions-stage'),canvas=$('#companions-canvas');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let paused=reduced.matches;try{if(!reduced.matches)paused=localStorage.getItem('town-home-motion')==='paused';}catch{}
