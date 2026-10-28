@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import {part,finishMaterial,pavement,flowerbed,plantedTree,glazedBuilding,batchStatic} from '../mission-scenery.js?art=37a';
-import {V,disk,arc,line,screen,heroAsset} from '../chapter-art.js?art=37a';
-import {radarConsole,globeMonument,celebrationStage,diningChair,guestModel} from '../chapter-props.js?art=37a';
-import {label,satellite,star} from '../mission-stage.js?art=37a';
-import {guests} from '../mission-data.js?art=37a';
+import {part,finishMaterial,pavement,flowerbed,plantedTree,glazedBuilding,batchStatic} from '../mission-scenery.js?art=38a';
+import {V,disk,arc,line,screen,heroAsset} from '../chapter-art.js?art=38a';
+import {radarConsole,globeMonument,celebrationStage,diningChair,guestModel} from '../chapter-props.js?art=38a';
+import {label,satellite,star} from '../mission-stage.js?art=38a';
+import {guests} from '../mission-data.js?art=38a';
 
 export function createChapterPuzzle(stage,state,mission,api){
  const root=stage.content,dock=api.dock,updates=[],cleanup=[];let selected=null,dragToken=null,ignoreClickUntil=0;

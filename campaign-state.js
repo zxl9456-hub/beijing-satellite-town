@@ -1,6 +1,6 @@
 // Campaign rules are renderer-independent so every objective can be verified with real input.
-import {ResearchState,researchParts} from './research-state.js?art=37a';
-import {FlightState,RunnerState,createMissionState,clamp,seeded} from './mission-core.js?art=37a';
+import {ResearchState,researchParts} from './research-state.js?art=38a';
+import {FlightState,RunnerState,createMissionState,clamp,seeded} from './mission-core.js?art=38a';
 export const difficultyNames={explore:'轻松探索',challenge:'进阶挑战'};
 export const campaignStory={
  2:{task:'为星光庆典设计一颗任务卫星',output:'任务卫星',xing:'精准装配',xun:'设计诊断'},

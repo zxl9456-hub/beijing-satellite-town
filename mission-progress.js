@@ -1,4 +1,4 @@
-import {missions,ships} from './mission-data.js?art=37a';
+import {missions,ships} from './mission-data.js?art=38a';
 export const PROGRESS_KEY='satellite-town-star-plan-v1';
 export function sanitizeProgress(raw){
  const result={version:1,completed:[],best:{}};

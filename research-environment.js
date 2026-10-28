@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {part,finishMaterial,plantedTree,flowerbed,batchStatic,surface,preparePlants} from './mission-scenery.js?art=37a';
-import {inscription} from './exhibition-machinery.js?art=37a';
+import {part,finishMaterial,plantedTree,flowerbed,batchStatic,surface,preparePlants} from './mission-scenery.js?art=38a';
+import {inscription} from './exhibition-machinery.js?art=38a';
 const V=(x,y,z)=>new THREE.Vector3(x,y,z);
 export function disc(parent,r,h,mat,x=0,y=0,z=0){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,64),typeof mat==='string'?finishMaterial(mat):mat);m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;parent.add(m);return m;}
 export function hoop(parent,r,mat,x=0,y=0,z=0,t=.035){const m=new THREE.Mesh(new THREE.TorusGeometry(r,t,10,80),typeof mat==='string'?finishMaterial(mat):mat);m.position.set(x,y,z);m.rotation.x=-Math.PI/2;parent.add(m);return m;}

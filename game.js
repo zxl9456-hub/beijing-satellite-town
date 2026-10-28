@@ -1,12 +1,12 @@
-import {createCampaignState,campaignStory,difficultyNames} from './campaign-state.js?art=37a';
-import {townAudio} from './town-audio.js?art=37a';
-import {missions,missionById,gameURL,regionURL as baseRegionURL,ships} from './mission-data.js?art=37a';
-import {browserProgress} from './mission-progress.js?art=37a';
-import {MissionStage} from './mission-stage.js?art=37a';
-import {createPuzzle} from './games/puzzles.js?art=37a';
-import {createArcade} from './games/arcade.js?art=37a';
-import {RunnerCamera} from './runner-camera.js?art=37a';
-import {createCelebration} from './celebration.js?art=37a';
+import {createCampaignState,campaignStory,difficultyNames} from './campaign-state.js?art=38a';
+import {townAudio} from './town-audio.js?art=38a';
+import {missions,missionById,gameURL,regionURL as baseRegionURL,ships} from './mission-data.js?art=38a';
+import {browserProgress} from './mission-progress.js?art=38a';
+import {MissionStage} from './mission-stage.js?art=38a';
+import {createPuzzle} from './games/puzzles.js?art=38a';
+import {createArcade} from './games/arcade.js?art=38a';
+import {RunnerCamera} from './runner-camera.js?art=38a';
+import {createCelebration} from './celebration.js?art=38a';
 const regionURL=id=>baseRegionURL(id)+'&resume=1';
 const $=s=>document.querySelector(s),params=new URLSearchParams(location.search),finale=params.get('mode')==='finale',mission=missionById(params.get('region')||params.get('mission'))||missions[0],progress=browserProgress(),dock=$('#control-dock'),screen=$('#screen'),body=$('#screen-body');
 let lastScenePhase='',sceneDirty=true,uiTick=0;
@@ -15,12 +15,12 @@ let difficulty='explore';try{difficulty=localStorage.getItem('town-game-difficul
 if(['explore','challenge'].includes(params.get('difficulty')))difficulty=params.get('difficulty');
 let voice=false;try{voice=localStorage.getItem('town-game-voice')==='on';}catch{}
 function chime(){townAudio.effect('collect');}
-function message(text,speak=false){$('#guide-line').textContent=text;if(!finale){const isXing=text.startsWith('星仔'),key=isXing?'xingzai':'xunbao',name=isXing?'星仔':'讯宝';$('.guide-panel img').src='./assets/characters/'+key+'.webp?art=37a';$('.guide-panel img').alt=name;$('.guide-panel span').textContent=name+(isXing?'观察':'导航');}if(voice&&speak)townAudio.speak(text);lastAction=time;}
+function message(text,speak=false){$('#guide-line').textContent=text;if(!finale){const isXing=text.startsWith('星仔'),key=isXing?'xingzai':'xunbao',name=isXing?'星仔':'讯宝';$('.guide-panel img').src='./assets/characters/'+key+'.webp?art=38a';$('.guide-panel img').alt=name;$('.guide-panel span').textContent=name+(isXing?'观察':'导航');}if(voice&&speak)townAudio.speak(text);lastAction=time;}
 function feedback(text,good=true){$('#action-feedback').textContent=text;$('#action-feedback').classList.add('show');feedbackUntil=time+3;townAudio.effect(good?'collect':'hit');lastAction=time;}
 function show(html){screen.dataset.phase=phase;body.innerHTML=html;screen.hidden=false;requestAnimationFrame(()=>body.querySelector('button:not(:disabled),a')?.focus());}
 function hide(){screen.hidden=true;$('#game-canvas').focus({preventScroll:true});}
 function actions(items){return '<div class="screen-actions">'+items+'</div>';}
-const buddies='<div class="intro-buddies"><img src="./assets/characters/xingzai.webp?art=37a" alt="星仔"><img src="./assets/characters/xunbao.webp?art=37a" alt="讯宝"></div>';
+const buddies='<div class="intro-buddies"><img src="./assets/characters/xingzai.webp?art=38a" alt="星仔"><img src="./assets/characters/xunbao.webp?art=38a" alt="讯宝"></div>';
 function refreshHeader(){$('#star-count').textContent='✦ '+progress.count+'/7';$('#storage-note').textContent=progress.available?'进度仅保存在本设备浏览器 · 重玩不会重复领取奖励':'当前浏览器无法保存进度，请保持本页开启；建议允许网站本地存储';}
 function updateAudio(){$('#voice-toggle').textContent='语音 '+(voice?'开':'关');$('#voice-toggle').setAttribute('aria-pressed',String(voice));}
 $('#voice-toggle').onclick=()=>{voice=!voice;updateAudio();if(!voice)townAudio.stopSpeech();else message($('#guide-line').textContent,true);try{localStorage.setItem('town-game-voice',voice?'on':'off');}catch{}};updateAudio();refreshHeader();
@@ -34,7 +34,7 @@ function intro(){phase='intro';let controls='';if(mission.n===5){controls='<div 
  body.querySelectorAll('[data-ship]').forEach(b=>b.onclick=()=>{chosenShip=b.dataset.ship;intro();});body.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;intro();});body.querySelectorAll('[data-difficulty]').forEach(b=>b.onclick=()=>{difficulty=b.dataset.difficulty;try{localStorage.setItem('town-game-difficulty',difficulty);}catch{}intro();});$('#start-game').onclick=start;
 }
 function construct(){document.body.classList.add('game-started');state=createCampaignState(mission.n,{ship:chosenShip,difficulty,outcomes:progress.outcomes});view=mission.n===5||mission.n===6?createArcade(stage,state,mission,api):createPuzzle(stage,state,mission,api);message(mission.hint,true);if(mission.n>1)mountCooperation();}
-function mountCooperation(){document.body.classList.add('campaign-game');const el=document.createElement('div');el.id='campaign-cooperation';el.className='campaign-cooperation';el.innerHTML=['xingzai','xunbao'].map((who,i)=>`<button data-assist="${who}"><img src="./assets/characters/${who}.webp?art=37a" alt=""><span>${i?'讯宝':'星仔'} · ${i?campaignStory[mission.n].xun:campaignStory[mission.n].xing}<small data-charge="${who}"></small></span></button>`).join('');$('.guide-panel').append(el);el.onclick=e=>{const b=e.target.closest('[data-assist]');if(!b||!api.active())return;const ok=state.assist(b.dataset.assist);feedback(state.message,ok);message(state.message,true);if(ok)stage.pose(b.dataset.assist,'Walk',1);hud();};}
+function mountCooperation(){document.body.classList.add('campaign-game');const el=document.createElement('div');el.id='campaign-cooperation';el.className='campaign-cooperation';el.innerHTML=['xingzai','xunbao'].map((who,i)=>`<button data-assist="${who}"><img src="./assets/characters/${who}.webp?art=38a" alt=""><span>${i?'讯宝':'星仔'} · ${i?campaignStory[mission.n].xun:campaignStory[mission.n].xing}<small data-charge="${who}"></small></span></button>`).join('');$('.guide-panel').append(el);el.onclick=e=>{const b=e.target.closest('[data-assist]');if(!b||!api.active())return;const ok=state.assist(b.dataset.assist);feedback(state.message,ok);message(state.message,true);if(ok)stage.pose(b.dataset.assist,'Walk',1);hud();};}
 function retryCheckpoint(){phase='retry';view?.clear?.();townAudio.duck('pause',true);show('<p class="eyebrow">试飞检查点</p><h2 id="screen-title">重新整备，再出发</h2><p>'+state.message+'</p><p>'+(state.checkpoint?'核心已经保存在货舱，从返航阶段继续':'从所选航线重新出发，保留你的机型与难度')+'</p>'+actions('<button class="primary" id="retry-checkpoint">从检查点重试</button><a href="./journey.html">返回任务地图</a>'));$('#retry-checkpoint').onclick=()=>{state.retry();view?.clear?.();accumulator=0;beginCountdown(play);};}
 function beginCountdown(fn){townAudio.duck('pause',false);townAudio.effect('tick');hide();phase='countdown';countdown=3;afterCountdown=fn;$('#countdown').hidden=false;$('#countdown').textContent='3';view?.clear?.();}
 function play(){townAudio.duck('pause',false);townAudio.effect('go');phase='playing';$('#pause-button').disabled=false;accumulator=0;lastAction=time;}
