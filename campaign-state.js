@@ -1,11 +1,12 @@
 // Campaign rules are renderer-independent so every objective can be verified with real input.
-import {ResearchState,researchParts} from './research-state.js?art=39a';
-import {FlightState,RunnerState,createMissionState,clamp,seeded} from './mission-core.js?art=39a';
+import {MapQuestState} from './map-quest-state.js?art=40a';
+import {ResearchState,researchParts} from './research-state.js?art=40a';
+import {FlightState,RunnerState,createMissionState,clamp,seeded} from './mission-core.js?art=40a';
 export const difficultyNames={explore:'轻松探索',challenge:'进阶挑战'};
 export const campaignStory={
  2:{task:'为星光庆典设计一颗任务卫星',output:'任务卫星',xing:'精准装配',xun:'设计诊断'},
  3:{task:'把庆典邀请通过卫星传回小镇',output:'三路邀请信号',xing:'稳定天线',xun:'频谱扫描'},
- 4:{task:'比较地表变化，为庆典选出安全方案',output:'地表观察报告',xing:'影像校正',xun:'复核线索'},
+ 4:{task:'找回三枚数据核心，协作连接城市地图',output:'双星导航地图',xing:'寻路与锁桥',xun:'扫描与中继'},
  5:{task:'回收失联探测器的星光核心并送回基地',output:'星光核心',xing:'紧急维修',xun:'回收牵引'},
  6:{task:'把社区能量送到星光庆典会场',output:'社区能量',xing:'稳固货舱',xun:'紧急救援'},
  7:{task:'用沿途的成果筹备属于大家的庆典',output:'星光庆典',xing:'布置协助',xun:'约束检查'}
@@ -62,20 +63,6 @@ export class SignalState{
  assist(who){if(!spend(this,who))return false;if(who==='xingzai'){this.assistUntil=this.time+12;this.message='星仔稳定天线 12 秒，漂移减缓';}else{this.scanUntil=this.time+8;this.message='讯宝已展开频谱扫描，8 秒内显示真实信标';}return true;}
  outcome(){return {artifact:'三路邀请信号',links:3};}
 }
-export const observationTypes={park:'植被变化',river:'水域变化',road:'交通建设',none:'光照或遮挡'};
-export class SurveyState{
- constructor(options={}){init(this,options.difficulty,options.seed);this.time=0;this.done=false;this.found=[];this.selected=null;this.corrected=false;this.phase='observe';this.tiles=Array.from({length:9},(_,id)=>({id,type:'same',variant:0}));const order=shuffle([...Array(9).keys()],this.random);['park','river','road',...(this.hard?['park']:[]),'cloud','shadow'].forEach((type,i)=>{this.tiles[order[i]]={id:order[i],type,variant:i===3?1:0};});this.message='先比较影像，再选择格网并判断变化类型';}
- get changes(){return this.tiles.filter(x=>['park','river','road'].includes(x.type));}
- get max(){return this.changes.length+1;}
- get count(){return this.found.length+Number(this.done);}
- get score(){return Math.max(10,100-this.mistakes*6);}
- tick(dt){if(!this.done)this.time+=clamp(dt,0,.1);}
- select(id){if(this.done||!this.tiles[id])return false;this.selected=id;this.revision++;return true;}
- classify(type){if(this.done||this.selected===null||!observationTypes[type])return false;const t=this.tiles[this.selected];if(this.found.includes(t.id)){this.message='这处变化已经入档';return false;}const correct=type===t.type||type==='none'&&['cloud','shadow','same'].includes(t.type);if(!correct){this.mistakes++;this.message='分类与影像不符。比较形状、边界和道路连接，排除光照变化';}else if(type==='none'){this.message='判断正确，这是遮挡或光照，不属于地表变化';}else{this.found.push(t.id);this.message=observationTypes[type]+'已记录';if(this.found.length===this.changes.length){this.phase='report';this.message='变化全部入档：河道扩张靠近步道，庆典前应优先核查什么？';}}this.revision++;return correct;}
- report(choice){if(this.phase!=='report')return false;if(choice!=='bank'){this.mistakes++;this.message='根据水域扩张的证据，优先核查临水步道与岸线';this.revision++;return false;}this.done=true;this.phase='complete';this.revision++;return true;}
- assist(who){if(!spend(this,who))return false;if(who==='xingzai'){this.corrected=true;this.message='星仔完成影像校正：云层与阴影被淡化，真实地物保持不变';}else{const t=this.changes.find(t=>!this.found.includes(t.id));this.message=t?'讯宝：重点比较第 '+(Math.floor(t.id/3)+1)+' 行，仍有未记录的地表变化':'讯宝：把报告交给巡检队，关注河岸与步道';}return true;}
- outcome(){return {artifact:'地表观察报告',changes:this.found.length,priority:'bank'};}
-}
 export class RescueFlightState extends FlightState{
  constructor(ship,options={}){super(ship);init(this,options.difficulty,options.seed);this.phase='route';this.route=null;this.health=this.hard?3:5;this.maxHealth=this.health;this.failed=false;this.carrying=false;this.checkpoint=false;this.abilityCooldown=0;this.missionClock=0;this.combatClock=0;this.travel=0;this.hold=0;this.core={x:2.8,z:-.8};this.dock={x:-2,z:.6};}
  get max(){return 3;}
@@ -126,4 +113,4 @@ export class CelebrationState{
  assist(who){if(!spend(this,who))return false;if(who==='xingzai'){if(this.phase==='decorate'){const d=this.decors.find(x=>!this.placements[x.id]);this.placeDecor(d.id,d.zone);this.message='星仔协助布置了一件庆典设备';}else if(this.phase==='seating'){this.seat('guide',this.solution.indexOf('guide'));this.message='星仔带讲解员找到了讲解位';}else{this.charges[who]++;this.message='节目顺序需要你决定，依照卡片上的先后关系安排';return false;}}else{this.inspected=true;this.message=this.phase==='seating'?'讯宝已逐条检查心愿，查看下方反馈':this.phase==='program'?'讯宝：先检查安全，再接电、广播、演出，最后合影':'讯宝：展品、供电、迎宾三个区域各有用途';}return true;}
  outcome(){return {artifact:'星光庆典',guests:this.people.length,program:[...this.program],placements:{...this.placements}};}
 }
-export function createCampaignState(n,options={}){return n===1?createMissionState(1):n===2?new EngineeringState(options):n===3?new SignalState(options):n===4?new SurveyState(options):n===5?new RescueFlightState(options.ship||'tracker',options):n===6?new DeliveryRunnerState(options):new CelebrationState(options);}
+export function createCampaignState(n,options={}){return n===1?createMissionState(1):n===2?new EngineeringState(options):n===3?new SignalState(options):n===4?new MapQuestState(options):n===5?new RescueFlightState(options.ship||'tracker',options):n===6?new DeliveryRunnerState(options):new CelebrationState(options);}

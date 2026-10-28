@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {createExhibit,createOrrery} from '../exhibition-environment.js?art=39a';
-import {createHatch,createArchiveDrawer,createCalibrationConsole,createStarChart,inscription} from '../exhibition-machinery.js?art=39a';
-import {exhibitNames,exhibitTypes} from '../exhibition-state.js?art=39a';
+import {createExhibit,createOrrery} from '../exhibition-environment.js?art=40a';
+import {createHatch,createArchiveDrawer,createCalibrationConsole,createStarChart,inscription} from '../exhibition-machinery.js?art=40a';
+import {exhibitNames,exhibitTypes} from '../exhibition-state.js?art=40a';
 const clues={
  navigation:{title:'稳定的节拍',hardware:'顶部的环形天线周围，排列着精密计时模块。地面接收器比较信号抵达的时间，推算自己的位置。',note:'用时间与轨道信息帮助地面确定坐标。'},
  communication:{title:'遥远的回声',hardware:'展开的抛物面天线指向远方，中央馈源与通信载荷相连。它接收信号，再转发到另一处。',note:'在相隔遥远的地面站之间建立通信链路。'},

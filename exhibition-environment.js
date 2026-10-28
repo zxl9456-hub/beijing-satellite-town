@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {part,finishMaterial,plantedTree,flowerbed,batchStatic,surface} from './mission-scenery.js?art=39a';
+import {part,finishMaterial,plantedTree,flowerbed,batchStatic,surface} from './mission-scenery.js?art=40a';
 
 export async function createExhibitionEnvironment(stage){
  const root=new THREE.Group();root.name='逐星展馆 · 精细建筑';stage.scene.add(root);stage.environmentRoot=root;stage.exhibition=true;

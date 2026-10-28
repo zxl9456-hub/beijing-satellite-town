@@ -1,9 +1,9 @@
-import {componentOptions,engineeringOrders} from '../campaign-state.js?art=39a';
+import {componentOptions,engineeringOrders} from '../campaign-state.js?art=40a';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {part,finishMaterial} from '../mission-scenery.js?art=39a';
-import {createWorkstation,moduleModel,disc,hoop} from '../research-environment.js?art=39a';
-import {researchParts as ids,researchNames as names,researchPorts as ports} from '../research-state.js?art=39a';
+import {part,finishMaterial} from '../mission-scenery.js?art=40a';
+import {createWorkstation,moduleModel,disc,hoop} from '../research-environment.js?art=40a';
+import {researchParts as ids,researchNames as names,researchPorts as ports} from '../research-state.js?art=40a';
 const V=(x,y,z)=>new THREE.Vector3(x,y,z);
 const info={power:'金色电池组的底部是一排矩形触点，为整颗卫星提供稳定电源。先接通电源总线，其他设备才能安装。',wings:'成对的太阳翼带有左右双铰链，蓝色光伏电池将光能转为电能。展开后还需要朝向模拟太阳。',camera:'镜头后方的圆形安装座连接光学载荷，细密散热片帮助设备保持稳定。安装后需要用标定图检查焦位。',antenna:'抛物面天线通过同轴接口连接顶部转台，将卫星采集的信息发送到地面站。信道必须与接收端一致。'};
 const testNames={wings:'太阳翼供电',camera:'相机标定',antenna:'通信握手'};

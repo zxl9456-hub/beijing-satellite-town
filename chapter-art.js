@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {part,finishMaterial,pavement,flowerbed,plantedTree,lightPost,bench,glazedBuilding,batchStatic,makeGround} from './mission-scenery.js?art=39a';
+import {part,finishMaterial,pavement,flowerbed,plantedTree,lightPost,bench,glazedBuilding,batchStatic,makeGround} from './mission-scenery.js?art=40a';
 
 export const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 export function disk(parent,r,h,kind='stone',x=0,y=0,z=0){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,96),finishMaterial(kind));m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;parent.add(m);return m;}

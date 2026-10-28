@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {part,finishMaterial} from './mission-scenery.js?art=39a';
+import {part,finishMaterial} from './mission-scenery.js?art=40a';
 
 export function inscription(text,width=256,height=128){
  const c=document.createElement('canvas');c.width=width;c.height=height;const x=c.getContext('2d');x.fillStyle='#18394b';x.fillRect(0,0,width,height);x.strokeStyle='#c5a56b';x.lineWidth=4;x.strokeRect(5,5,width-10,height-10);x.fillStyle='#f5dba7';x.textAlign='center';x.textBaseline='middle';x.font='600 '+Math.floor(height*.38)+'px sans-serif';x.fillText(text,width/2,height/2,width-18);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.45,metalness:.18});

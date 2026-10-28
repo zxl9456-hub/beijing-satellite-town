@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
-import {CachedAOPass as SSAOPass} from './cached-ao.js?art=39a';
+import {CachedAOPass as SSAOPass} from './cached-ao.js?art=40a';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
-import {CinematicLensPass,createFilmGrade} from './cinematic-lens.js?art=39a';
-import {createArchitecturalSky} from './architectural-lighting.js?art=39a';
+import {CinematicLensPass,createFilmGrade} from './cinematic-lens.js?art=40a';
+import {createArchitecturalSky} from './architectural-lighting.js?art=40a';
 
 export function createMissionLighting(stage){
  const {renderer,scene}=stage;

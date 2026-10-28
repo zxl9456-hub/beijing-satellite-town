@@ -1,0 +1,31 @@
+/* The city is the play surface; the compact control desk leaves the routes clear. */
+[data-mission=data].game-started .guide-panel{display:none!important}
+[data-mission=data] .map-core-status{display:flex;gap:7px;margin:12px 0}
+[data-mission=data] .map-core-status span{flex:1;border:1px solid #d9ddd4;border-radius:12px;padding:8px 4px;text-align:center;font-size:11px;color:#7b8e8d;background:#f1f0e6}
+.map-core-status i{display:block;font-size:10px;color:#b29665;font-style:normal;margin-bottom:4px}
+[data-mission=data] .map-core-status .collected{background:#dbeee7;border-color:#72b6b4;color:#22676e}
+.map-ip-status{display:grid;grid-template-columns:30px 1fr 32px 1fr 44px;gap:5px;align-items:center;border-bottom:1px solid #dce2d7;padding:10px 0;margin-bottom:10px}
+#map-hint{width:44px;min-height:44px;border:1px solid #d4dfd9;border-radius:10px;background:#e5eee8;color:#397785;font-size:11px}.map-ip-status img{width:100%;height:43px;object-fit:contain}.map-ip-status span{font-size:10px;line-height:1.5;color:#3f6974}.map-ip-status b{display:block;font-size:10px;font-weight:500;color:#82938d}
+.map-action-row,.map-relays{display:flex;gap:7px;margin:8px 0}.map-action-row button,.map-relays button,.map-dpad button,#map-interact{min-height:44px;border:1px solid #cedbd6;border-radius:12px;background:#fffef6;color:#365e68;font-size:11px;padding:8px;flex:1}
+.map-action-row kbd,#map-interact kbd{font-size:9px;margin-left:5px;color:#8da09a}.map-relays button{background:#e8efeb}.map-relays small{display:block;font-size:9px;color:#6b8682;margin-top:4px}
+.map-controls{display:flex;align-items:center;gap:10px;margin:15px 0}.map-dpad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:44px 44px;gap:4px}.map-dpad button{font-size:19px;touch-action:manipulation}.map-dpad [data-dir=up]{grid-column:2}.map-dpad [data-dir=left]{grid-row:2;grid-column:1}.map-dpad [data-dir=down]{grid-row:2;grid-column:2}.map-dpad [data-dir=right]{grid-row:2;grid-column:3}
+#map-interact{min-height:92px;background:#267f8b;color:#fff9e9;border-color:#438c93;line-height:1.8;font-weight:700}#map-interact kbd{display:block;color:#c1dfdb}
+#map-status{min-height:42px;border-left:2px solid #d3ae73;background:#eeeede;padding:10px 12px;border-radius:0 10px 10px 0;font-size:11px!important}.map-stats{display:flex;align-items:center;justify-content:space-between;color:#a58a58;font-size:11px}.map-stats button{padding:10px 8px;min-height:44px;border-radius:10px;background:#e5eee8;color:#397785;font-size:11px}
+@media(min-width:761px){[data-mission=data].game-started .game-info{top:108px!important;left:28px!important;padding:12px 16px;width:250px!important}[data-mission=data].game-started .mission-console{top:108px!important;right:20px!important;bottom:95px;width:282px!important;max-height:none!important;padding:16px!important}[data-mission=data] .game-nav{right:26px;left:auto;transform:none}[data-mission=data] .game-nav>*{min-width:76px!important}[data-mission=data] #action-feedback{top:100px!important}
+ [data-mission=data] .chapter-eyebrow,[data-mission=data] .chapter-tip,[data-mission=data] #map-objective{display:none}
+ [data-mission=data] .map-controls{margin:10px 0}[data-mission=data] .map-core-status{margin:8px 0}[data-mission=data] .map-ip-status{padding:6px 0;margin-bottom:6px}[data-mission=data] #map-status{min-height:0;margin:8px 0!important}
+}
+@media(max-width:760px){
+ [data-mission=data].game-started #playfield{position:fixed!important;top:166px!important;left:0!important;right:0!important;bottom:290px!important;height:auto!important;min-height:180px!important;border-radius:0!important}
+ [data-mission=data].game-started .game-info{top:110px!important;left:12px!important;width:calc(100% - 24px)!important;padding:8px 12px!important;display:flex!important;align-items:center;gap:8px}
+ [data-mission=data] .game-info h1{font-size:15px!important;white-space:nowrap}[data-mission=data] .live-progress{margin:0 0 0 auto!important;width:150px;font-size:10px!important}
+ [data-mission=data].game-started .mission-console{bottom:8px!important;max-height:277px!important;padding:10px 12px!important;overflow:auto}
+ [data-mission=data] .chapter-eyebrow,[data-mission=data] #control-dock>h3,[data-mission=data] .chapter-tip,[data-mission=data] #map-objective,[data-mission=data] #map-bonus{display:none}
+ [data-mission=data] #control-dock{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px}
+ [data-mission=data] .map-core-status{margin:0;grid-column:1/-1}.map-core-status i{display:inline;margin:0 7px 0 0}[data-mission=data] .map-core-status span{padding:5px;font-size:10px}
+ [data-mission=data] .map-ip-status{grid-column:1/-1;margin:0;padding:2px 0;border:0}[data-mission=data] .map-ip-status img{height:29px}
+ .map-action-row,.map-relays{margin:0}.map-action-row button,.map-relays button{font-size:10px;padding:5px;min-height:44px}.map-relays small{font-size:8px}
+ .map-controls{grid-column:1/-1;margin:0;justify-content:center}.map-dpad{grid-template-columns:repeat(3,44px);gap:3px;grid-template-rows:44px 44px}.map-dpad [data-dir=up]{min-height:44px;padding:2px}.map-dpad button{padding:4px}#map-interact{min-height:79px;max-width:180px}
+ [data-mission=data] #map-status{grid-column:1/-1;margin:0;padding:5px 8px;min-height:0;font-size:10px!important;line-height:1.5}.map-stats{display:none}
+ [data-mission=data] .world-tag{display:none}[data-mission=data] #action-feedback{top:8px!important}
+}

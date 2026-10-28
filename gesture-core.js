@@ -1,4 +1,4 @@
-import {clamp} from './mission-core.js?art=39a';
+import {clamp} from './mission-core.js?art=40a';
 // Landmark coordinates stay in memory; only discrete runner actions leave this interpreter.
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export class RunnerGesture{
